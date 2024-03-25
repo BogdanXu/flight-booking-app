@@ -14,6 +14,17 @@ public class Operator {
     @Column(name = "iban")
     private String IBAN;
 
+    private String URI;
+
+    public Operator() {
+    }
+
+    public Operator(long id, String name, String IBAN, String URI) {
+        this.id = id;
+        this.name = name;
+        this.IBAN = IBAN;
+        this.URI = URI;
+    }
 
     public long getId() {
         return id;
@@ -39,14 +50,12 @@ public class Operator {
         this.IBAN = IBAN;
     }
 
-    public Operator(long id, String name, String IBAN) {
-        this.id = id;
-        this.name = name;
-        this.IBAN = IBAN;
+    public String getURI() {
+        return URI;
     }
 
-    public Operator() {
-
+    public void setURI(String URI) {
+        this.URI = URI;
     }
 
     @Override
@@ -55,6 +64,7 @@ public class Operator {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", IBAN='" + IBAN + '\'' +
+                ", URI='" + URI + '\'' +
                 '}';
     }
 }

@@ -2,7 +2,7 @@ version: '3.9'
 services:
   db:
     image: postgres
-    container_name: Flight_Postgres_Container
+    container_name: Admin_DB
     restart: always
     shm_size: 128mb
     environment:
@@ -11,3 +11,4 @@ services:
       - 5435:5432
     expose:
       - 5435
+
