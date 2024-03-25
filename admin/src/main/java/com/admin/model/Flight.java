@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.security.Timestamp;
 
 @Entity
-public class Fight {
+public class Flight {
     @Id
     @GeneratedValue
     private Long id;
@@ -16,8 +16,8 @@ public class Fight {
     private String ticketPrice;
     @Column(name = "seats_available")
     private Integer seatsAvailable;
-    @Column(name = "fight_duration")
-    private String fightDuration;
+    @Column(name = "flight_duration")
+    private String flightDuration;
     @ManyToOne
     @JoinColumn(name = "opertor_id")
     Operator operator;
@@ -28,17 +28,17 @@ public class Fight {
     @JoinColumn(name = "arrival_airport_id")
     Destination arrivalAirport;
 
-    public Fight() {
+    public Flight() {
     }
 
-    public Fight(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable, String fightDuration,
-                 Operator operator, Destination departureAirport, Destination arrivalAirport) {
+    public Flight(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable, String flightDuration,
+                  Operator operator, Destination departureAirport, Destination arrivalAirport) {
         this.id = id;
         this.flightCode = flightCode;
         this.date = date;
         this.ticketPrice = ticketPrice;
         this.seatsAvailable = seatsAvailable;
-        this.fightDuration = fightDuration;
+        this.flightDuration = flightDuration;
         this.operator = operator;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
@@ -84,12 +84,12 @@ public class Fight {
         this.seatsAvailable = seatsAvailable;
     }
 
-    public String getFightDuration() {
-        return fightDuration;
+    public String getFlightDuration() {
+        return flightDuration;
     }
 
-    public void setFightDuration(String fightDuration) {
-        this.fightDuration = fightDuration;
+    public void setFlightDuration(String flightDuration) {
+        this.flightDuration = flightDuration;
     }
 
     public Operator getOperator() {
@@ -118,13 +118,13 @@ public class Fight {
 
     @Override
     public String toString() {
-        return "Fight{" +
+        return "Flight{" +
                 "id=" + id +
                 ", flightCode='" + flightCode + '\'' +
                 ", date=" + date +
                 ", ticketPrice='" + ticketPrice + '\'' +
                 ", seatsAvailable=" + seatsAvailable +
-                ", fightDuration='" + fightDuration + '\'' +
+                ", flightDuration='" + flightDuration + '\'' +
                 ", operator=" + operator +
                 ", departureAirport=" + departureAirport +
                 ", arrivalAirport=" + arrivalAirport +
