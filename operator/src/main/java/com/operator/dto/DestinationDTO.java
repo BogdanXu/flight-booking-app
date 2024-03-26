@@ -1,23 +1,24 @@
-package com.operator.model;
+package com.operator.dto;
 
-import jakarta.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
-@Entity
-public class Destination {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class DestinationDTO {
     private Long id;
-    @Column(name = "cod_airport")
-    private String codAirport;
-    @Column(name = "country")
-    private String country;
-    @Column(name = "city")
-    private String city;
 
-    public Destination() {
+    @NotBlank(message = "Airport code must not be blank")
+    @Size(max = 10, message = "Airport code must be at most 10 characters")
+    private String codAirport;
+
+    @NotBlank(message = "Country must not be blank")
+    private String country;
+
+    @NotBlank(message = "City must not be blank")
+    private String city;
+    public DestinationDTO() {
     }
 
-    public Destination(Long id, String codAirport, String country, String city) {
+    public DestinationDTO(Long id, String codAirport, String country, String city) {
         this.id = id;
         this.codAirport = codAirport;
         this.country = country;
@@ -58,7 +59,7 @@ public class Destination {
 
     @Override
     public String toString() {
-        return "Destination{" +
+        return "DestinationDTO{" +
                 "id=" + id +
                 ", codAirport='" + codAirport + '\'' +
                 ", country='" + country + '\'' +
@@ -66,4 +67,3 @@ public class Destination {
                 '}';
     }
 }
-

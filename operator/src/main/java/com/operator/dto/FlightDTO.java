@@ -1,44 +1,36 @@
-package com.operator.model;
+package com.operator.dto;
 
-import jakarta.persistence.*;
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.security.Timestamp;
 
-@Entity
-public class Flight {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FlightDTO {
     private Long id;
-    @Column(name = "flight_code")
+
+    @NotBlank(message = "Flight code must not be blank")
     private String flightCode;
-    @Column(name = "date")
+
+    @NotNull(message = "Date must not be null")
     private Timestamp date;
-    @Column(name = "ticket_price")
+
+    @NotBlank(message = "Ticket price must not be blank")
     private String ticketPrice;
-    @Column(name = "seats_available")
+
+    @NotNull(message = "Seats available must not be null")
+    @Positive(message = "Seats available must be positive")
     private Integer seatsAvailable;
-    @Column(name = "flight_duration")
+
+    @NotBlank(message = "Flight duration must not be blank")
     private String flightDuration;
 
-    @ManyToOne
-    @JoinColumn(name = "departure_airpor_id")
-    Destination departureAirport;
-    @ManyToOne
-    @JoinColumn(name = "arrival_airport_id")
-    Destination arrivalAirport;
+    @NotBlank(message = "Departure airport code must not be blank")
+    private String departureAirportCode;
 
-    public Flight() {
-    }
+    @NotBlank(message = "Arrival airport code must not be blank")
+    private String arrivalAirportCode;
 
-    public Flight(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable, String flightDuration, Destination departureAirport, Destination arrivalAirport) {
-        this.id = id;
-        this.flightCode = flightCode;
-        this.date = date;
-        this.ticketPrice = ticketPrice;
-        this.seatsAvailable = seatsAvailable;
-        this.flightDuration = flightDuration;
-        this.departureAirport = departureAirport;
-        this.arrivalAirport = arrivalAirport;
+    public FlightDTO(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable, String flightDuration, String codAirport, String codAirport1) {
     }
 
     public Long getId() {
@@ -89,34 +81,33 @@ public class Flight {
         this.flightDuration = flightDuration;
     }
 
-    public Destination getDepartureAirport() {
-        return departureAirport;
+    public String getDepartureAirportCode() {
+        return departureAirportCode;
     }
 
-    public void setDepartureAirport(Destination departureAirport) {
-        this.departureAirport = departureAirport;
+    public void setDepartureAirportCode(String departureAirportCode) {
+        this.departureAirportCode = departureAirportCode;
     }
 
-    public Destination getArrivalAirport() {
-        return arrivalAirport;
+    public String getArrivalAirportCode() {
+        return arrivalAirportCode;
     }
 
-    public void setArrivalAirport(Destination arrivalAirport) {
-        this.arrivalAirport = arrivalAirport;
+    public void setArrivalAirportCode(String arrivalAirportCode) {
+        this.arrivalAirportCode = arrivalAirportCode;
     }
 
     @Override
     public String toString() {
-        return "Flight{" +
+        return "FlightDTO{" +
                 "id=" + id +
                 ", flightCode='" + flightCode + '\'' +
                 ", date=" + date +
                 ", ticketPrice='" + ticketPrice + '\'' +
                 ", seatsAvailable=" + seatsAvailable +
                 ", flightDuration='" + flightDuration + '\'' +
-                ", departureAirport=" + departureAirport +
-                ", arrivalAirport=" + arrivalAirport +
+                ", departureAirportCode='" + departureAirportCode + '\'' +
+                ", arrivalAirportCode='" + arrivalAirportCode + '\'' +
                 '}';
     }
 }
-
