@@ -1,33 +1,34 @@
 version: '3.9'
 services:
-  db:
-    image: postgres
-    container_name: Operator_DB
-    restart: always
-    shm_size: 128mb
+  operator-postgres:
+    container_name: operator-postgres
+    image: postgres:latest
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - operator-vol-postgres:/var/lib/postgresql/data
     ports:
-      - 5432:5432
-    expose:
-      - 5432
-
-  operator-tarom:
-    container_name: operator-tarom
-    image: tarom/operator:1.0.0
-    build: .
+      - "5434:5432"
+    networks:
+      - host
+  operator-be:
+    container_name: operator-be
+    build:
+      context: .
     ports:
-      - 8383:8383
+      - "8282:8282"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://operator-postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: secret
-    depends_on:
-      - db
-
-
-
-
-
+      SPRING_DATASOURCE_PASSWORD: postgres
+    links:
+      - operator-postgres
+    networks:
+      - host
+volumes:
+  operator-vol-postgres:
+    driver: local
+networks:
+  host:
+    driver: bridge
