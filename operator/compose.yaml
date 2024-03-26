@@ -6,27 +6,28 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
     ports:
       - 5432:5432
     expose:
       - 5432
 
-  operator-lufthansa:
-    container_name: operator-lufthansa
-    build:
-      context: .
+  operator-tarom:
+    container_name: operator-tarom
+    image: tarom/operator:1.0.0
+    build: .
     ports:
-      - "8081:8081"
-    links:
+      - 8383:8383
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    depends_on:
       - db
 
-#  operator-tarom:
-#    container_name: operator-tarom
-#    build:
-#      context: .
-#    ports:
-#      - "8383:8282"
-#    links:
-#      - tarom
+
+
+
+
