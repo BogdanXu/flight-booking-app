@@ -1,9 +1,14 @@
+version: '3.9'
 services:
-  postgres:
-    image: 'postgres:latest'
+  db:
+    image: postgres
+    container_name: Admin_DB
+    restart: always
+    shm_size: 128mb
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_PASSWORD: secret
     ports:
-      - '5432'
+      - 5435:5432
+    expose:
+      - 5435
+
