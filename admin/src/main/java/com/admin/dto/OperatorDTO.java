@@ -1,34 +1,13 @@
 package com.admin.dto;
 
-public class OperatorDTO {
-    private long id;
-    private String name;
+public class OperatorDTO extends OperatorBaseDTO{
     private String IBAN;
-    private String URI;
+    public OperatorDTO() {
+    }
 
-    public OperatorDTO() {}
-
-    public OperatorDTO(long id, String name, String IBAN, String URI) {
-        this.id = id;
-        this.name = name;
+    public OperatorDTO(long id, String name, String URI, String IBAN) {
+        super(id, name, URI);
         this.IBAN = IBAN;
-        this.URI = URI;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getIBAN() {
@@ -39,12 +18,5 @@ public class OperatorDTO {
         this.IBAN = IBAN;
     }
 
-    public String getURI() {
-        return URI;
-    }
-
-    public void setURI(String URI) {
-        this.URI = URI;
-    }
 
 }

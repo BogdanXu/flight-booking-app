@@ -1,5 +1,6 @@
 package com.admin.mapper;
 
+import com.admin.dto.OperatorBaseDTO;
 import com.admin.dto.OperatorDTO;
 import com.admin.model.Operator;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,19 @@ public class OperatorMapper {
         operatorDTO.setId(operator.getId());
         operatorDTO.setName(operator.getName());
         operatorDTO.setIBAN(operator.getIBAN());
+        operatorDTO.setURI(operator.getURI());
+
+        return operatorDTO;
+    }
+
+    public static OperatorBaseDTO toBaseDTO(Operator operator) {
+        if (operator == null) {
+            return null;
+        }
+
+        OperatorBaseDTO operatorDTO = new OperatorBaseDTO();
+        operatorDTO.setId(operator.getId());
+        operatorDTO.setName(operator.getName());
         operatorDTO.setURI(operator.getURI());
 
         return operatorDTO;
