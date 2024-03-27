@@ -12,18 +12,19 @@ public class Operator {
     private String name;
 
     @Column(name = "iban")
-    private String IBAN;
+    private String iban;
 
-    private String URI;
+    @Column(name="uri")
+    private String uri;
 
     public Operator() {
     }
 
-    public Operator(long id, String name, String IBAN, String URI) {
+    public Operator(long id, String name, String iban, String uri) {
         this.id = id;
         this.name = name;
-        this.IBAN = IBAN;
-        this.URI = URI;
+        this.iban = iban;
+        this.uri = uri;
     }
 
     public long getId() {
@@ -42,20 +43,20 @@ public class Operator {
         this.name = name;
     }
 
-    public String getIBAN() {
-        return IBAN;
+    public String getIban() {
+        return iban;
     }
 
-    public void setIBAN(String IBAN) {
-        this.IBAN = IBAN;
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
-    public String getURI() {
-        return URI;
+    public String getUri() {
+        return uri;
     }
 
-    public void setURI(String URI) {
-        this.URI = URI;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     @Override
@@ -63,8 +64,8 @@ public class Operator {
         return "Operator{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", IBAN='" + IBAN + '\'' +
-                ", URI='" + URI + '\'' +
+                ", IBAN='" + iban + '\'' +
+                ", URI='" + uri + '\'' +
                 '}';
     }
 }
