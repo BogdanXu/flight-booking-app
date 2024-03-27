@@ -7,9 +7,13 @@ import com.operator.model.Destination;
 import com.operator.model.Flight;
 import com.operator.repository.DestinationRepository;
 import com.operator.repository.FlightRepository;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -137,5 +141,25 @@ public class FlightService {
         if (!destinationRepository.existsByCodAirport(arrivalAirportCode)) {
             throw new DestinationNotFoundException("Destination with code " + arrivalAirportCode + " not found.");
         }
+    }
+
+    public List<Flight> searchFlights(String startDestination, String endDestination, LocalDate startDate, LocalDate endDate) {
+        return flightRepository.findAll((root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (startDestination != null) {
+                predicates.add(criteriaBuilder.equal(root.get("departureAirport").get("codAirport"), startDestination));
+            }
+
+            if (endDestination != null) {
+                predicates.add(criteriaBuilder.equal(root.get("arrivalAirport").get("codAirport"), endDestination));
+            }
+
+            if (startDate != null && endDate != null) {
+                predicates.add(criteriaBuilder.between(root.get("date"), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
     }
 }
