@@ -1,21 +1,21 @@
 package com.admin.dto;
 
 public class OperatorDTO extends OperatorBaseDTO{
-    private String IBAN;
+    private String iban;
     public OperatorDTO() {
     }
 
-    public OperatorDTO(long id, String name, String URI, String IBAN) {
+    public OperatorDTO(long id, String name, String URI, String iban) {
         super(id, name, URI);
-        this.IBAN = IBAN;
+        this.iban = iban;
     }
 
-    public String getIBAN() {
-        return IBAN;
+    public String getIban() {
+        return iban;
     }
 
-    public void setIBAN(String IBAN) {
-        this.IBAN = IBAN;
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
 

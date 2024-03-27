@@ -3,15 +3,15 @@ package com.admin.dto;
 public class OperatorBaseDTO {
     private long id;
     private String name;
-    private String URI;
+    private String uri;
 
     public OperatorBaseDTO() {
     }
 
-    public OperatorBaseDTO(long id, String name, String URI) {
+    public OperatorBaseDTO(long id, String name, String uri) {
         this.id = id;
         this.name = name;
-        this.URI = URI;
+        this.uri = uri;
     }
 
     public long getId() {
@@ -30,11 +30,11 @@ public class OperatorBaseDTO {
         this.name = name;
     }
 
-    public String getURI() {
-        return URI;
+    public String getUri() {
+        return uri;
     }
 
-    public void setURI(String URI) {
-        this.URI = URI;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }

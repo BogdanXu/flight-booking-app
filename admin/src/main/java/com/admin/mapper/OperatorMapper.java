@@ -16,8 +16,8 @@ public class OperatorMapper {
         OperatorDTO operatorDTO = new OperatorDTO();
         operatorDTO.setId(operator.getId());
         operatorDTO.setName(operator.getName());
-        operatorDTO.setIBAN(operator.getIBAN());
-        operatorDTO.setURI(operator.getURI());
+        operatorDTO.setIban(operator.getIban());
+        operatorDTO.setUri(operator.getUri());
 
         return operatorDTO;
     }
@@ -30,7 +30,7 @@ public class OperatorMapper {
         OperatorBaseDTO operatorDTO = new OperatorBaseDTO();
         operatorDTO.setId(operator.getId());
         operatorDTO.setName(operator.getName());
-        operatorDTO.setURI(operator.getURI());
+        operatorDTO.setUri(operator.getUri());
 
         return operatorDTO;
     }
@@ -43,8 +43,8 @@ public class OperatorMapper {
         Operator operator = new Operator();
         operator.setId(operatorDTO.getId());
         operator.setName(operatorDTO.getName());
-        operator.setIBAN(operatorDTO.getIBAN());
-        operator.setURI(operatorDTO.getURI());
+        operator.setIban(operatorDTO.getIban());
+        operator.setUri(operatorDTO.getUri());
 
         return operator;
     }

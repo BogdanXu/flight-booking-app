@@ -39,8 +39,8 @@ public class OperatorService {
         if (optionalOperator.isPresent()) {
             Operator operator = optionalOperator.get();
             operator.setName(operatorDTO.getName());
-            operator.setIBAN(operatorDTO.getIBAN());
-            operator.setURI(operatorDTO.getURI());
+            operator.setIban(operatorDTO.getIban());
+            operator.setUri(operatorDTO.getUri());
             return OperatorMapper.toDTO(operatorRepository.save(operator));
         } else {
             return null;
