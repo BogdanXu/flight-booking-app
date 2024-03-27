@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/flights")
-@Validated
 public class FlightController {
 
     private final FlightService flightService;
