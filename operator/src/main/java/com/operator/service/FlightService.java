@@ -23,12 +23,10 @@ import java.util.stream.Collectors;
 @Service
 public class FlightService {
 
+    @Value("${airline.iata.code}")
+    private String IATACode;
     private final FlightRepository flightRepository;
     private final DestinationRepository destinationRepository;
-
-    @Value("${airline.flight.code}")
-    private String flightCode;
-
 
     @Autowired
     public FlightService(FlightRepository flightRepository, DestinationRepository destinationRepository) {
@@ -39,6 +37,7 @@ public class FlightService {
     public List<FlightDTO> getAllFlights() {
         List<Flight> flights = flightRepository.findAll();
         return flights.stream()
+                .filter(flight -> flight.getFlightCode().startsWith(IATACode))
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -164,8 +163,8 @@ public class FlightService {
                 predicates.add(criteriaBuilder.between(root.get("flightDate"), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
             }
 
-            if (flightCode != null && !flightCode.isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("flightCode"), flightCode + "%"));
+            if (IATACode != null && !IATACode.isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("flightCode"), IATACode + "%"));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

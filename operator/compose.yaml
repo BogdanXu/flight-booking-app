@@ -22,7 +22,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://operator-postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      airline.flight.code: LH
+      airline.iata.code: LH
     links:
       - operator-postgres
     networks:
@@ -38,7 +38,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://operator-postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      airline.flight.code: RO
+      airline.iata.code: RO
     links:
       - operator-postgres
     networks:
