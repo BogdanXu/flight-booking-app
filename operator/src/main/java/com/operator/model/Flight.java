@@ -2,17 +2,17 @@ package com.operator.model;
 
 import jakarta.persistence.*;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 public class Flight {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(name = "flight_code")
     private String flightCode;
     @Column(name = "date")
-    private Timestamp date;
+    private LocalDateTime date;
     @Column(name = "ticket_price")
     private String ticketPrice;
     @Column(name = "seats_available")
@@ -30,7 +30,7 @@ public class Flight {
     public Flight() {
     }
 
-    public Flight(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable, String flightDuration, Destination departureAirport, Destination arrivalAirport) {
+    public Flight(Long id, String flightCode, LocalDateTime date, String ticketPrice, Integer seatsAvailable, String flightDuration, Destination departureAirport, Destination arrivalAirport) {
         this.id = id;
         this.flightCode = flightCode;
         this.date = date;
@@ -57,11 +57,11 @@ public class Flight {
         this.flightCode = flightCode;
     }
 
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

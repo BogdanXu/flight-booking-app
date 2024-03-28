@@ -3,7 +3,7 @@ package com.operator.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 public class FlightDTO {
     private Long id;
@@ -11,8 +11,7 @@ public class FlightDTO {
     @NotBlank(message = "Flight code must not be blank")
     private String flightCode;
 
-    @NotNull(message = "Date must not be null")
-    private Timestamp date;
+    private LocalDateTime date;
 
     @NotBlank(message = "Ticket price must not be blank")
     private String ticketPrice;
@@ -30,67 +29,75 @@ public class FlightDTO {
     @NotBlank(message = "Arrival airport code must not be blank")
     private String arrivalAirportCode;
 
-    public FlightDTO(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable, String flightDuration, String codAirport, String codAirport1) {
+    public FlightDTO(Long id, String flightCode, LocalDateTime date, String ticketPrice, Integer seatsAvailable, String flightDuration, String departureAirportCode, String arrivalAirportCode) {
+        this.id = id;
+        this.flightCode = flightCode;
+        this.date = date;
+        this.ticketPrice = ticketPrice;
+        this.seatsAvailable = seatsAvailable;
+        this.flightDuration = flightDuration;
+        this.departureAirportCode = departureAirportCode;
+        this.arrivalAirportCode = arrivalAirportCode;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getFlightCode() {
         return flightCode;
     }
 
-    public void setFlightCode(String flightCode) {
-        this.flightCode = flightCode;
-    }
-
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return date;
-    }
-
-    public void setDate(Timestamp date) {
-        this.date = date;
     }
 
     public String getTicketPrice() {
         return ticketPrice;
     }
 
-    public void setTicketPrice(String ticketPrice) {
-        this.ticketPrice = ticketPrice;
-    }
-
     public Integer getSeatsAvailable() {
         return seatsAvailable;
-    }
-
-    public void setSeatsAvailable(Integer seatsAvailable) {
-        this.seatsAvailable = seatsAvailable;
     }
 
     public String getFlightDuration() {
         return flightDuration;
     }
 
-    public void setFlightDuration(String flightDuration) {
-        this.flightDuration = flightDuration;
-    }
-
     public String getDepartureAirportCode() {
         return departureAirportCode;
     }
 
-    public void setDepartureAirportCode(String departureAirportCode) {
-        this.departureAirportCode = departureAirportCode;
-    }
-
     public String getArrivalAirportCode() {
         return arrivalAirportCode;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFlightCode(String flightCode) {
+        this.flightCode = flightCode;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public void setTicketPrice(String ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public void setSeatsAvailable(Integer seatsAvailable) {
+        this.seatsAvailable = seatsAvailable;
+    }
+
+    public void setFlightDuration(String flightDuration) {
+        this.flightDuration = flightDuration;
+    }
+
+    public void setDepartureAirportCode(String departureAirportCode) {
+        this.departureAirportCode = departureAirportCode;
     }
 
     public void setArrivalAirportCode(String arrivalAirportCode) {
