@@ -22,7 +22,7 @@ public class Flight {
     @JoinColumn(name = "opertor_id")
     Operator operator;
     @ManyToOne
-    @JoinColumn(name = "departure_airpor_id")
+    @JoinColumn(name = "departure_airport_id")
     Destination departureAirport;
     @ManyToOne
     @JoinColumn(name = "arrival_airport_id")
