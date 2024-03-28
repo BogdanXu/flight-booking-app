@@ -10,6 +10,7 @@ import com.operator.repository.FlightRepository;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +25,10 @@ public class FlightService {
 
     private final FlightRepository flightRepository;
     private final DestinationRepository destinationRepository;
+
+    @Value("${airline.flight.code}")
+    private String flightCode;
+
 
     @Autowired
     public FlightService(FlightRepository flightRepository, DestinationRepository destinationRepository) {
@@ -63,7 +68,7 @@ public class FlightService {
                 existingFlight.setFlightCode(flightDTO.getFlightCode());
             }
             if (flightDTO.getDate() != null) {
-                existingFlight.setDate(flightDTO.getDate());
+                existingFlight.setFlightDate(flightDTO.getDate());
             }
             if (flightDTO.getTicketPrice() != null) {
                 existingFlight.setTicketPrice(flightDTO.getTicketPrice());
@@ -101,7 +106,7 @@ public class FlightService {
         return new FlightDTO(
                 flight.getId(),
                 flight.getFlightCode(),
-                flight.getDate(),
+                flight.getFlightDate(),
                 flight.getTicketPrice(),
                 flight.getSeatsAvailable(),
                 flight.getFlightDuration(),
@@ -156,7 +161,11 @@ public class FlightService {
             }
 
             if (startDate != null && endDate != null) {
-                predicates.add(criteriaBuilder.between(root.get("date"), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
+                predicates.add(criteriaBuilder.between(root.get("flightDate"), startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
+            }
+
+            if (flightCode != null && !flightCode.isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("flightCode"), flightCode + "%"));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

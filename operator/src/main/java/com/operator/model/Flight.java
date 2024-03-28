@@ -11,8 +11,8 @@ public class Flight {
     private Long id;
     @Column(name = "flight_code")
     private String flightCode;
-    @Column(name = "date")
-    private LocalDateTime date;
+    @Column(name = "flight_date")
+    private LocalDateTime flightDate;
     @Column(name = "ticket_price")
     private String ticketPrice;
     @Column(name = "seats_available")
@@ -30,10 +30,10 @@ public class Flight {
     public Flight() {
     }
 
-    public Flight(Long id, String flightCode, LocalDateTime date, String ticketPrice, Integer seatsAvailable, String flightDuration, Destination departureAirport, Destination arrivalAirport) {
+    public Flight(Long id, String flightCode, LocalDateTime flightDate, String ticketPrice, Integer seatsAvailable, String flightDuration, Destination departureAirport, Destination arrivalAirport) {
         this.id = id;
         this.flightCode = flightCode;
-        this.date = date;
+        this.flightDate = flightDate;
         this.ticketPrice = ticketPrice;
         this.seatsAvailable = seatsAvailable;
         this.flightDuration = flightDuration;
@@ -57,12 +57,12 @@ public class Flight {
         this.flightCode = flightCode;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getFlightDate() {
+        return flightDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setFlightDate(LocalDateTime date) {
+        this.flightDate = date;
     }
 
     public String getTicketPrice() {
@@ -110,7 +110,7 @@ public class Flight {
         return "Flight{" +
                 "id=" + id +
                 ", flightCode='" + flightCode + '\'' +
-                ", date=" + date +
+                ", date=" + flightDate +
                 ", ticketPrice='" + ticketPrice + '\'' +
                 ", seatsAvailable=" + seatsAvailable +
                 ", flightDuration='" + flightDuration + '\'' +

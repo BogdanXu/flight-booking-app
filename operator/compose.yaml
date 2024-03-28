@@ -12,8 +12,8 @@ services:
       - "5434:5432"
     networks:
       - host
-  operator-be:
-    container_name: operator-be
+  operator-be-lufthansa:
+    container_name: operator-be-lufthansa
     build:
       context: .
     ports:
@@ -22,6 +22,23 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://operator-postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      airline.flight.code: LH
+    links:
+      - operator-postgres
+    networks:
+      - host
+
+  operator-be-tarom:
+    container_name: operator-be-tarom
+    build:
+      context: .
+    ports:
+      - "8383:8282"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://operator-postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      airline.flight.code: RO
     links:
       - operator-postgres
     networks:
