@@ -6,7 +6,7 @@ import java.security.Timestamp;
 @Entity
 public class Flight {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(name = "flight_code")
     private String flightCode;
