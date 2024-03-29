@@ -7,7 +7,7 @@
 
     <changeSet id="1" author="AlexP">
         <createTable tableName="operator">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
@@ -24,7 +24,7 @@
 
     <changeSet id="2" author="AlexP">
         <createTable tableName="destination">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="cod_airport" type="varchar(255)">
@@ -37,7 +37,7 @@
 
         <changeSet id="3" author="AlexP">
             <createTable tableName="flight">
-                <column name="id" type="bigint" autoIncrement="true">
+                <column name="id" type="bigint">
                     <constraints primaryKey="true" nullable="false"/>
                 </column>
                 <column name="flight_code" type="varchar(255)" />

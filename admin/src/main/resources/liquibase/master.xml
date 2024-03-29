@@ -7,7 +7,8 @@
 
 
     <include file="changelog/01_create_tables.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/02_rename_sequences.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/02_add_autoincrement.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/03_rename_sequences.xml" relativeToChangelogFile="true"/>
 
 
 </databaseChangeLog>

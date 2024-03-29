@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="Bogdan" id="4">
+        <addAutoIncrement catalogName="postgres"
+                          columnDataType="bigint"
+                          columnName="id"
+                          defaultOnNull="false"
+                          generationType="SEQUENCE"
+                          incrementBy="50"
+                          schemaName="public"
+                          startWith="1"
+                          tableName="destination"/>
+    </changeSet>
+    <changeSet author="Bogdan" id="5">
+        <addAutoIncrement catalogName="postgres"
+                          columnDataType="bigint"
+                          columnName="id"
+                          defaultOnNull="false"
+                          generationType="SEQUENCE"
+                          incrementBy="50"
+                          schemaName="public"
+                          startWith="1"
+                          tableName="operator"/>
+    </changeSet>
+    <changeSet author="Bogdan" id="6">
+        <addAutoIncrement catalogName="postgres"
+                          columnDataType="bigint"
+                          columnName="id"
+                          defaultOnNull="false"
+                          generationType="SEQUENCE"
+                          incrementBy="50"
+                          schemaName="public"
+                          startWith="1"
+                          tableName="flight"/>
+    </changeSet>
+
+</databaseChangeLog>

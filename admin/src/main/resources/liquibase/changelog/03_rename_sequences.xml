@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet  author="VladGrigo"  id="4">
+    <changeSet  author="VladGrigo"  id="7">
         <renameSequence  catalogName="postgres"
                          newSequenceName="destination_seq"
                          oldSequenceName="destination_id_seq"

@@ -1,14 +1,40 @@
 version: '3.9'
 services:
-  db:
+  admin-postgres:
     image: postgres
-    container_name: Admin_DB
+    container_name: admin-postgres
     restart: always
     shm_size: 128mb
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
+    volumes:
+      - admin-vol-postgres:/var/lib/postgresql/data
     ports:
       - 5435:5432
     expose:
       - 5435
+    networks:
+      - host
+  admin-be:
+    container_name: admin-be
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://admin-postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    links:
+      - admin-postgres
+    networks:
+      - host
+networks:
+  host:
+    driver: bridge
+volumes:
+  admin-vol-postgres:
+    driver: local
+
 
