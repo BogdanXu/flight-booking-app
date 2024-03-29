@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet  author="VladGrigo"  id="4">
+        <renameSequence  catalogName="postgres"
+                         newSequenceName="destination_seq"
+                         oldSequenceName="destination_id_seq"
+                         schemaName="public"/>
+        <renameSequence  catalogName="postgres"
+                         newSequenceName="operator_seq"
+                         oldSequenceName="operator_id_seq"
+                         schemaName="public"/>
+        <renameSequence  catalogName="postgres"
+                         newSequenceName="flight_seq"
+                         oldSequenceName="flight_id_seq"
+                         schemaName="public"/>
+    </changeSet>
+
+</databaseChangeLog>

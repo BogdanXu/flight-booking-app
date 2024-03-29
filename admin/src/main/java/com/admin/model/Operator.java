@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Operator {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @Column(name = "name")
