@@ -24,6 +24,14 @@ public class TopicConfig {
                 .build();
     }
     @Bean
+    NewTopic paymentRequestsUpdates(){
+        return TopicBuilder
+                .name("payment-request-updates")
+                .partitions(10)
+                .replicas(1)
+                .build();
+    }
+    @Bean
     NewTopic notificationEvents(){
         return TopicBuilder
                 .name("notification-events")
