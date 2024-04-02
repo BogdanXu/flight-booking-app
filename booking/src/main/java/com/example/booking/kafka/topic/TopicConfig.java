@@ -1,4 +1,4 @@
-package com.example.booking.topic;
+package com.example.booking.kafka.topic;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;

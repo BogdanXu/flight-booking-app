@@ -1,5 +1,6 @@
 package com.example.booking.controller;
 
+import com.example.booking.dto.BookingDTO;
 import com.example.booking.model.Booking;
 import com.example.booking.service.BookingService;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,12 @@ public class BookingController {
     }
 
     @PostMapping
-    public Mono<Booking> createBooking(@RequestBody Booking booking) {
-        return bookingService.saveBooking(booking);
+    public Mono<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
+        return bookingService.saveBooking(bookingDTO);
     }
 
     @GetMapping("/{id}")
-    public Mono<Booking> getBookingById(@PathVariable String id) {
+    public Mono<BookingDTO> getBookingById(@PathVariable String id) {
         return bookingService.findById(id);
     }
 }
