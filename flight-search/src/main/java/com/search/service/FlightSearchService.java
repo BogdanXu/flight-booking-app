@@ -2,28 +2,22 @@ package com.search.service;
 
 import com.search.dto.FlightDTO;
 import com.search.dto.OperatorBaseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.util.Date;
-import java.util.List;
-
+import java.net.URI;
+import java.time.LocalDate;
+import org.springframework.web.util.UriBuilder;
 @Service
 public class FlightSearchService {
 
     private final WebClient adminClient = WebClient.create("http://localhost:8080");
 
-    //apelez serviciul de admin si colectez lista de operatori pentru cautarea facuta
-    public Flux<OperatorBaseDTO> operatorsList(String departure, String arrival, Date date){
+    public Flux<OperatorBaseDTO> operatorsList(String departure, String arrival) {
+        String uri = "/operator/uris?departure=" + departure + "&destination=" + arrival;
         return adminClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/uris")
-                        .queryParam("departure", departure)
-                        .queryParam("destination", arrival)
-                        .queryParam("date", date)
-                        .build())
+                .uri(uri)
                 .retrieve()
                 .bodyToFlux(OperatorBaseDTO.class);
     }
@@ -36,22 +30,19 @@ public class FlightSearchService {
     }
 
     //apelez operatorul pentru uri ul specificat si intorc fluxul de zboruri
-    private Flux<FlightDTO> callOperatorAndRetrieveFlights(String operatorUri, String departure, String arrival, Date date) {
+
+    private Flux<FlightDTO> callOperatorAndRetrieveFlights(String operatorUri, String departure, String arrival, LocalDate date) {
+        String uri = "?startDestination=" + departure + "&endDestination=" + arrival + "&startDate=" + date + "&endDate=" + date;
         WebClient operatorClient = WebClient.create(operatorUri);
         return operatorClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/flights")
-                        .queryParam("departure", departure)
-                        .queryParam("destination", arrival)
-                        .queryParam("date", date)
-                        .build())
+                .uri(uri)
                 .retrieve()
                 .bodyToFlux(FlightDTO.class);
     }
 
     //initializez cautarea de zboruri folosind ulterior si filtre de cautare
-    public Flux<FlightDTO> searchFlights(String departure, String arrival, Date date) {
-        Flux<OperatorBaseDTO> operatorBaseDTOFlux = operatorsList(departure, arrival, date);
+    public Flux<FlightDTO> searchFlights(String departure, String arrival, LocalDate date) {
+        Flux<OperatorBaseDTO> operatorBaseDTOFlux = operatorsList(departure, arrival);
         return extractDistinctOperatorUris(operatorBaseDTOFlux)
                 .flatMap(operatorUri -> callOperatorAndRetrieveFlights(operatorUri, departure, arrival, date));
     }

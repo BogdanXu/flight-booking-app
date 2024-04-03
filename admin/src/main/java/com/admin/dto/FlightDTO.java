@@ -1,29 +1,28 @@
 package com.admin.dto;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 public class FlightDTO {
     private Long id;
     private String flightCode;
-    private Timestamp date;
+    private LocalDateTime date;
     private String ticketPrice;
     private Integer seatsAvailable;
     private String flightDuration;
-    private OperatorDTO operator;
-    private DestinationDTO departureAirport;
-    private DestinationDTO arrivalAirport;
+    private Long operatorId;
+    private String departureAirport;
+    private String arrivalAirport;
 
     public FlightDTO() {}
 
-    public FlightDTO(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable,
-                     String flightDuration, OperatorDTO operator, DestinationDTO departureAirport, DestinationDTO arrivalAirport) {
+    public FlightDTO(Long id, String flightCode, LocalDateTime date, String ticketPrice, Integer seatsAvailable, String flightDuration, Long operatorId, String departureAirport, String arrivalAirport) {
         this.id = id;
         this.flightCode = flightCode;
         this.date = date;
         this.ticketPrice = ticketPrice;
         this.seatsAvailable = seatsAvailable;
         this.flightDuration = flightDuration;
-        this.operator = operator;
+        this.operatorId = operatorId;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
     }
@@ -44,11 +43,11 @@ public class FlightDTO {
         this.flightCode = flightCode;
     }
 
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -76,27 +75,27 @@ public class FlightDTO {
         this.flightDuration = flightDuration;
     }
 
-    public OperatorDTO getOperator() {
-        return operator;
+    public Long getOperatorId() {
+        return operatorId;
     }
 
-    public void setOperator(OperatorDTO operator) {
-        this.operator = operator;
+    public void setOperatorId(Long operatorId) {
+        this.operatorId = operatorId;
     }
 
-    public DestinationDTO getDepartureAirport() {
+    public String getDepartureAirport() {
         return departureAirport;
     }
 
-    public void setDepartureAirport(DestinationDTO departureAirport) {
+    public void setDepartureAirport(String departureAirport) {
         this.departureAirport = departureAirport;
     }
 
-    public DestinationDTO getArrivalAirport() {
+    public String getArrivalAirport() {
         return arrivalAirport;
     }
 
-    public void setArrivalAirport(DestinationDTO arrivalAirport) {
+    public void setArrivalAirport(String arrivalAirport) {
         this.arrivalAirport = arrivalAirport;
     }
 }

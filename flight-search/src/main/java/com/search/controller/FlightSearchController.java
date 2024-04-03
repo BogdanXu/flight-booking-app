@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -23,7 +24,7 @@ public class FlightSearchController {
     @GetMapping
     public Flux<FlightDTO> getFlights(@RequestParam String departure,
                                       @RequestParam String destination,
-                                      @RequestParam Date date) {
+                                      @RequestParam LocalDate date) {
         return flightSearchService.searchFlights(departure, destination, date);
     }
 }

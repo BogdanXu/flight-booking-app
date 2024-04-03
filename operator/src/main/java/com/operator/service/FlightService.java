@@ -147,7 +147,7 @@ public class FlightService {
         }
     }
 
-    public List<Flight> searchFlights(String startDestination, String endDestination, LocalDate startDate, LocalDate endDate) {
+    public List<FlightDTO> searchFlights(String startDestination, String endDestination, LocalDate startDate, LocalDate endDate) {
         return flightRepository.findAll((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -168,6 +168,7 @@ public class FlightService {
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        });
+        }).stream().map(this::convertToDTO).collect(Collectors.toList());
+
     }
 }

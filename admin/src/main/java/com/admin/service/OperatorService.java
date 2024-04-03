@@ -1,26 +1,45 @@
 package com.admin.service;
 
+import com.admin.dto.FlightDTO;
 import com.admin.dto.OperatorBaseDTO;
 import com.admin.dto.OperatorDTO;
 import com.admin.mapper.OperatorMapper;
+import com.admin.model.Flight;
 import com.admin.model.Operator;
 import com.admin.repository.OperatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class OperatorService {
 
-    @Autowired
-    private OperatorRepository operatorRepository;
+    private final OperatorRepository operatorRepository;
+
+    private final FlightService flightService;
+
+    public OperatorService(OperatorRepository operatorRepository, FlightService flightService) {
+        this.operatorRepository = operatorRepository;
+        this.flightService = flightService;
+    }
+
 
     public Operator createOperator(OperatorDTO operatorDTO) {
         Operator operator = OperatorMapper.toEntity(operatorDTO);
         return operatorRepository.save(operator);
+    }
+
+    public OperatorBaseDTO findOperatorById(Long id) {
+        if (operatorRepository.findById(id).isPresent())
+            return OperatorMapper.toBaseDTO(operatorRepository.findById(id).get());
+        else
+            return null;
     }
 
     public List<OperatorDTO> getAllOperators() {
@@ -47,10 +66,13 @@ public class OperatorService {
         }
     }
 
-    public List<OperatorBaseDTO> sendAllOperatorURIs() {
-        List<Operator> operators = operatorRepository.findAll();
-        return operators.stream()
-                .map(OperatorMapper::toBaseDTO)
-                .collect(Collectors.toList());
+    public List<OperatorBaseDTO> sendAllOperatorURIs(String departure, String arrival) {
+        List<FlightDTO> flightsList = flightService.getAllFlightsByDepartureAndArrival(departure, arrival);
+        List<OperatorBaseDTO> operators = new ArrayList<>();
+        for (FlightDTO flight : flightsList) {
+            if (operatorRepository.findById(flight.getOperatorId()).isPresent())
+                operators.add(OperatorMapper.toBaseDTO(operatorRepository.findById(flight.getOperatorId()).get()));
+        }
+        return operators;
     }
 }
