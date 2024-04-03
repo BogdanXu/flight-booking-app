@@ -19,6 +19,7 @@ public class FlightController {
 
     private final FlightService flightService;
 
+
     @Autowired
     public FlightController(FlightService flightService) {
         this.flightService = flightService;
@@ -36,13 +37,13 @@ public class FlightController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Flight>> searchFlights(
+    public ResponseEntity<List<FlightDTO>> searchFlights(
             @RequestParam(required = false) String startDestination,
             @RequestParam(required = false) String endDestination,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
-        List<Flight> foundFlights = flightService.searchFlights(startDestination, endDestination, startDate, endDate);
+        List<FlightDTO> foundFlights = flightService.searchFlights(startDestination, endDestination, startDate, endDate);
         return ResponseEntity.ok(foundFlights);
     }
 

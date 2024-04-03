@@ -48,5 +48,18 @@ public class OperatorMapper {
 
         return operator;
     }
+
+    public static Operator toBaseEntity(OperatorBaseDTO operatorDTO) {
+        if (operatorDTO == null) {
+            return null;
+        }
+
+        Operator operator = new Operator();
+        operator.setId(operatorDTO.getId());
+        operator.setName(operatorDTO.getName());
+        operator.setUri(operatorDTO.getUri());
+
+        return operator;
+    }
 }
 

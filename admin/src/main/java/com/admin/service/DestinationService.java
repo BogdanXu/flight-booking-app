@@ -13,12 +13,20 @@ import java.util.stream.Collectors;
 @Service
 public class DestinationService {
 
-    @Autowired
-    private DestinationRepository destinationRepository;
+
+    private final DestinationRepository destinationRepository;
+
+    public DestinationService(DestinationRepository destinationRepository) {
+        this.destinationRepository = destinationRepository;
+    }
 
     public Destination createDestination(DestinationDTO destinationDTO) {
         Destination destination = DestinationMapper.toEntity(destinationDTO);
         return destinationRepository.save(destination);
+    }
+
+    public Destination findDestinationByAirportCode(String airportCode) {
+        return destinationRepository.findByCodAirport(airportCode);
     }
 
     public List<DestinationDTO> getAllDestinations() {

@@ -1,7 +1,8 @@
 package com.admin.model;
 
 import jakarta.persistence.*;
-import java.security.Timestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class Flight {
@@ -11,7 +12,7 @@ public class Flight {
     @Column(name = "flight_code")
     private String flightCode;
     @Column(name = "date")
-    private Timestamp date;
+    private LocalDateTime date;
     @Column(name = "ticket_price")
     private String ticketPrice;
     @Column(name = "seats_available")
@@ -19,7 +20,7 @@ public class Flight {
     @Column(name = "flight_duration")
     private String flightDuration;
     @ManyToOne
-    @JoinColumn(name = "opertor_id")
+    @JoinColumn(name = "operator_id")
     Operator operator;
     @ManyToOne
     @JoinColumn(name = "departure_airport_id")
@@ -31,7 +32,7 @@ public class Flight {
     public Flight() {
     }
 
-    public Flight(Long id, String flightCode, Timestamp date, String ticketPrice, Integer seatsAvailable, String flightDuration,
+    public Flight(Long id, String flightCode, LocalDateTime date, String ticketPrice, Integer seatsAvailable, String flightDuration,
                   Operator operator, Destination departureAirport, Destination arrivalAirport) {
         this.id = id;
         this.flightCode = flightCode;
@@ -60,11 +61,11 @@ public class Flight {
         this.flightCode = flightCode;
     }
 
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

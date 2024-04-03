@@ -47,8 +47,9 @@ public class OperatorController {
     }
 
     @GetMapping("/uris")
-    public ResponseEntity<List<OperatorBaseDTO>> sendAllOperatorURIs() {
-        List<OperatorBaseDTO> operatorBaseDTOList = operatorService.sendAllOperatorURIs();
+    public ResponseEntity<List<OperatorBaseDTO>> sendAllOperatorURIs(@RequestParam String departure,
+                                                                     @RequestParam String destination) {
+        List<OperatorBaseDTO> operatorBaseDTOList = operatorService.sendAllOperatorURIs(departure, destination);
         return new ResponseEntity<>(operatorBaseDTOList, HttpStatus.OK);
     }
 }
