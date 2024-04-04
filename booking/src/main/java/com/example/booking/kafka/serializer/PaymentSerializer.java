@@ -1,4 +1,4 @@
-package com.example.booking.serializer;
+package com.example.booking.kafka.serializer;
 
 import com.example.booking.model.Payment;
 import com.fasterxml.jackson.databind.ObjectMapper;
