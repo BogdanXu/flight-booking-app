@@ -1,6 +1,6 @@
 package com.example.booking.kafka.serializer;
 
-import com.example.booking.model.Payment;
+import com.example.booking.dto.PaymentDetailConfirmationDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
@@ -8,12 +8,12 @@ import org.apache.kafka.common.serialization.Serializer;
 import java.io.IOException;
 import java.util.Map;
 
-public class PaymentSerializer implements Serializer<Payment>, Deserializer<Payment> {
+public class PaymentDetailConfirmationDTOSerializer implements Serializer<PaymentDetailConfirmationDTO>, Deserializer<PaymentDetailConfirmationDTO> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public byte[] serialize(String topic, Payment data) {
+    public byte[] serialize(String topic, PaymentDetailConfirmationDTO data) {
         try {
             return objectMapper.writeValueAsBytes(data);
         } catch (Exception e) {
@@ -22,9 +22,9 @@ public class PaymentSerializer implements Serializer<Payment>, Deserializer<Paym
     }
 
     @Override
-    public Payment deserialize(String topic, byte[] data) {
+    public PaymentDetailConfirmationDTO deserialize(String topic, byte[] data) {
         try {
-            return objectMapper.readValue(data, Payment.class);
+            return objectMapper.readValue(data, PaymentDetailConfirmationDTO.class);
         } catch (IOException e) {
             throw new RuntimeException("Error deserializing Payment object", e);
         }

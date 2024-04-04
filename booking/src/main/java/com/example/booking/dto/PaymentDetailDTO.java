@@ -1,12 +1,12 @@
-package com.example.booking.model;
+package com.example.booking.dto;
 
-public class Payment {
+public class PaymentDetailDTO {
     private String bookingId;
     private String clientIban;
     private String operatorIban;
     private Integer sum;
 
-    public Payment(String bookingId, String clientIban, String operatorIban, Integer sum) {
+    public PaymentDetailDTO(String bookingId, String clientIban, String operatorIban, Integer sum) {
         this.bookingId = bookingId;
         this.clientIban = clientIban;
         this.operatorIban = operatorIban;

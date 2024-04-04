@@ -3,7 +3,7 @@ package com.example.booking.service;
 import com.example.booking.dto.BookingDTO;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
-import com.example.booking.model.Payment;
+import com.example.booking.dto.PaymentDetailDTO;
 import com.example.booking.repository.BookingRepository;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,11 @@ import reactor.core.publisher.Mono;
 @Service
 public class BookingService {
 
-    private final KafkaTemplate<String, Payment> kafkaTemplate;
+    private final KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate;
 
     private final BookingRepository bookingRepository;
 
-    public BookingService(KafkaTemplate<String, Payment> kafkaTemplate, BookingRepository bookingRepository) {
+    public BookingService(KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate, BookingRepository bookingRepository) {
         this.kafkaTemplate = kafkaTemplate;
         this.bookingRepository = bookingRepository;
     }
@@ -34,9 +34,9 @@ public class BookingService {
     }
 
     private void sendPaymentRequest(String bookingId) {
-        Payment payment = new Payment(bookingId, "clientIban", "operatorIban", 100);
-        kafkaTemplate.send("payment-request", payment);
-        System.out.println("Sent message to Kafka topic payment-request:" + payment);
+        PaymentDetailDTO paymentDetailDTO = new PaymentDetailDTO(bookingId, "clientIban", "operatorIban", 100);
+        kafkaTemplate.send("payment-request", paymentDetailDTO);
+        System.out.println("Sent message to Kafka topic payment-request:" + paymentDetailDTO);
     }
 
     private Booking mapToEntity(BookingDTO bookingDTO) {

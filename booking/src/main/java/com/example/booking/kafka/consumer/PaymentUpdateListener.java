@@ -1,5 +1,6 @@
 package com.example.booking.kafka.consumer;
 
+import com.example.booking.dto.PaymentDetailConfirmationDTO;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
 import com.example.booking.model.PaymentStatus;
@@ -15,10 +16,10 @@ public class PaymentUpdateListener {
     @Autowired
     private BookingRepository bookingRepository;
 
-    @KafkaListener(topics = "payment-request-updates", groupId = "${kafka.group.id}")
-    public void listen(PaymentUpdate paymentUpdate) {
+    @KafkaListener(topics = "payment-request-updates")
+    public void listen(PaymentDetailConfirmationDTO paymentUpdate) {
         String bookingId = paymentUpdate.getBookingId();
-        PaymentStatus paymentStatus = paymentUpdate.getPaymentStatus();
+        boolean paymentStatus = paymentUpdate.getPaymentValidation();
         BookingStatus newBookingStatus = getNewBookingStatus(paymentStatus);
         bookingRepository.findById(bookingId)
                 .flatMap(booking -> {
@@ -28,13 +29,10 @@ public class PaymentUpdateListener {
                 .subscribe();
     }
 
-    private BookingStatus getNewBookingStatus(PaymentStatus paymentStatus) {
-        if (paymentStatus == PaymentStatus.REJECTED) {
+    private BookingStatus getNewBookingStatus(boolean paymentStatus) {
+        if (!paymentStatus) {
             return BookingStatus.REJECTED;
-        } else if (paymentStatus == PaymentStatus.SUCCESS) {
+        } else
             return BookingStatus.SUCCESS;
-        } else {
-            return BookingStatus.PENDING;
-        }
     }
 }
