@@ -12,7 +12,7 @@ import org.springframework.web.util.UriBuilder;
 @Service
 public class FlightSearchService {
 
-    private final WebClient adminClient = WebClient.create("http://localhost:8080");
+    private final WebClient adminClient = WebClient.create("http://admin-be:8080");
 
     public Flux<OperatorBaseDTO> operatorsList(String departure, String arrival) {
         String uri = "/operator/uris?departure=" + departure + "&destination=" + arrival;

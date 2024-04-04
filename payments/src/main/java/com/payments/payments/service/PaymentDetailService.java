@@ -11,17 +11,9 @@ import reactor.core.publisher.Mono;
 public class PaymentDetailService {
 
 
-    private final KafkaTemplate<String, PaymentDetail> kafkaTemplateConsumer;
-    private final KafkaTemplate<String, PaymentDetailConfirmationDTO> kafkaTemplateProducer;
-
     private final PaymentDetailRepository paymentDetailRepository;
 
-
-
-    public PaymentDetailService(KafkaTemplate<String, PaymentDetail> kafkaTemplateConsumer, KafkaTemplate<String,
-            PaymentDetailConfirmationDTO> kafkaTemplateProducer, PaymentDetailRepository bookingRepository) {
-        this.kafkaTemplateConsumer = kafkaTemplateConsumer;
-        this.kafkaTemplateProducer = kafkaTemplateProducer;
+    public PaymentDetailService(PaymentDetailRepository bookingRepository) {
         this.paymentDetailRepository = bookingRepository;
     }
 

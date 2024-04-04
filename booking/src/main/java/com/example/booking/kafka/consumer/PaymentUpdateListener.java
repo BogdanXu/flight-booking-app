@@ -16,7 +16,7 @@ public class PaymentUpdateListener {
     @Autowired
     private BookingRepository bookingRepository;
 
-    @KafkaListener(topics = "payment-request-updates")
+    @KafkaListener(topics = "payment-request-updates", groupId = "payment_group_id")
     public void listen(PaymentDetailConfirmationDTO paymentUpdate) {
         String bookingId = paymentUpdate.getBookingId();
         boolean paymentStatus = paymentUpdate.getPaymentValidation();

@@ -81,7 +81,7 @@ services:
     expose:
       - 5435
     networks:
-      - host
+      - kafka-net
   admin-be:
     container_name: admin-be
     build:
@@ -93,11 +93,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://admin-postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: secret
-      spring.kafka.bootstrap-servers: broker:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:9092"
     links:
       - admin-postgres
     networks:
-      - host
+      - kafka-net
   payments-be:
     container_name: payments-be
     build:
@@ -135,7 +135,7 @@ services:
     ports:
       - "5434:5432"
     networks:
-      - host
+      - kafka-net
   operator-be-lufthansa:
     container_name: operator-be-lufthansa
     build:
@@ -151,7 +151,7 @@ services:
     links:
       - operator-postgres
     networks:
-      - host
+      - kafka-net
   operator-be-tarom:
     container_name: operator-be-tarom
     build:
@@ -167,7 +167,7 @@ services:
     links:
       - operator-postgres
     networks:
-      - host
+      - kafka-net
   flight-search-be:
     container_name: flight-search-be
     build:
@@ -176,7 +176,7 @@ services:
     ports:
       - "8082:8082"
     networks:
-      - host
+      - kafka-net
 volumes:
   booking-db:
   mongo-db:

@@ -36,7 +36,7 @@ public class PaymentUpdateListener {
             PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
             kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
         }
-        paymentDetailRepository.save(paymentDetail);
+        paymentDetailRepository.save(paymentDetail).subscribe();
     }
 
 

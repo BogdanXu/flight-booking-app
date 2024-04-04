@@ -20,7 +20,7 @@ public class BookingListener {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @KafkaListener(topics = "booking-reserved", groupId = "${kafka.group.id}")
+    @KafkaListener(topics = "booking-reserved")
     public void listenForBookings(BookingMessageDTO bookingMessageDTO) {
         Long flightId = bookingMessageDTO.getFlightId();
         Flight flight = null;
@@ -38,7 +38,7 @@ public class BookingListener {
         }
     }
 
-    @KafkaListener(topics = "booking-rejected", groupId = "${kafka.group.id}")
+    @KafkaListener(topics = "booking-rejected")
     public void listenForCanceledBookings(BookingMessageDTO bookingMessageDTO) {
         Long flightId = bookingMessageDTO.getFlightId();
         Flight flight = null;
