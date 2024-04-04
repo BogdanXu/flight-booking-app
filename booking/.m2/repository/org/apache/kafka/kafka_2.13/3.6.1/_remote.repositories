@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Apr 02 09:58:07 UTC 2024
+kafka_2.13-3.6.1.pom>central=
+kafka_2.13-3.6.1-test.jar>central=
+kafka_2.13-3.6.1.jar>central=
