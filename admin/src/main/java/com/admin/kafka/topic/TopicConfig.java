@@ -1,4 +1,4 @@
-package com.payments.payments.topic;
+package com.admin.kafka.topic;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
@@ -6,23 +6,30 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
-
-public class TopicConfig  {
+public class TopicConfig {
     @Bean
-    NewTopic paymentRequest(){
+    NewTopic bookingReserved(){
         return TopicBuilder
-                .name("payment-request")
+                .name("booking-reserved")
                 .partitions(10)
                 .replicas(1)
                 .build();
     }
     @Bean
-    NewTopic paymentRequestConfirmation(){
+    NewTopic bookingAdminConfirmation(){
         return TopicBuilder
-                .name("payment-request-confirmation")
+                .name("booking-admin-confirmation")
                 .partitions(10)
                 .replicas(1)
                 .build();
     }
 
+    @Bean
+    NewTopic bookingRejected(){
+        return TopicBuilder
+                .name("booking-rejected")
+                .partitions(10)
+                .replicas(1)
+                .build();
+    }
 }
