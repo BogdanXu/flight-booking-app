@@ -27,7 +27,7 @@ public class PaymentUpdateListener {
 
         PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
 
-        if(paymentDetail.getAmount() > 100){
+        if(paymentDetail.getSum() > 100){
             paymentDetail.setStatus("REJECTED");
             PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
             kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO );

@@ -9,21 +9,28 @@ public class PaymentDetail {
     @Id
     private String id;
     private String bookingId;
-    private String iban;
-    private double amount;
+    private Integer sum;
     private LocalDateTime paymentInitiationDate;
     private String status; // INITIATED, SUCCESS, REJECTED
+
+    private String clientIban;
+    private String operatorIban;
+
+    private Boolean paymentValidation;
 
     public PaymentDetail() {
     }
 
-    public PaymentDetail(String id, String bookingId, String iban, double amount, LocalDateTime paymentInitiationDate, String status) {
+    public PaymentDetail(String id, String bookingId, Integer sum, LocalDateTime paymentInitiationDate,
+                         String status, String clientIban, String operatorIban, Boolean paymentValidation) {
         this.id = id;
         this.bookingId = bookingId;
-        this.iban = iban;
-        this.amount = amount;
+        this.sum = sum;
         this.paymentInitiationDate = paymentInitiationDate;
         this.status = status;
+        this.clientIban = clientIban;
+        this.operatorIban = operatorIban;
+        this.paymentValidation = paymentValidation;
     }
 
     public String getId() {
@@ -42,20 +49,13 @@ public class PaymentDetail {
         this.bookingId = bookingId;
     }
 
-    public String getIban() {
-        return iban;
+
+    public Integer getSum() {
+        return sum;
     }
 
-    public void setIban(String iban) {
-        this.iban = iban;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setSum(Integer sum) {
+        this.sum = sum;
     }
 
     public LocalDateTime getPaymentInitiationDate() {
@@ -73,4 +73,44 @@ public class PaymentDetail {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getClientIban() {
+        return clientIban;
+    }
+
+    public void setClientIban(String clientIban) {
+        this.clientIban = clientIban;
+    }
+
+    public String getOperatorIban() {
+        return operatorIban;
+    }
+
+    public void setOperatorIban(String operatorIban) {
+        this.operatorIban = operatorIban;
+    }
+
+    public Boolean getPaymentValidation() {
+        return paymentValidation;
+    }
+
+    public void setPaymentValidation(Boolean paymentValidation) {
+        this.paymentValidation = paymentValidation;
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentDetail{" +
+                "id='" + id + '\'' +
+                ", bookingId='" + bookingId + '\'' +
+                ", sum=" + sum +
+                ", paymentInitiationDate=" + paymentInitiationDate +
+                ", status='" + status + '\'' +
+                ", clientIban='" + clientIban + '\'' +
+                ", operatorIban='" + operatorIban + '\'' +
+                ", paymentValidation=" + paymentValidation +
+                '}';
+    }
 }
+
+

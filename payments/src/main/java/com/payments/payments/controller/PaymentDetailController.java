@@ -29,15 +29,15 @@ public class PaymentDetailController {
          return "test1";
     }
 
-    public void mockStatusPayment(PaymentDetail paymentDetail){
-
-        String bookingId = paymentDetail.getBookingId();
-
-        if (parseInt(bookingId) % 2 ==0 ){
-            paymentDetail.setStatus("SUCCESS");
-        } else {
-            paymentDetail.setStatus("REJECTED");
-        }
-    }
+//    public void mockStatusPayment(PaymentDetail paymentDetail){
+//
+//        String bookingId = paymentDetail.getBookingId();
+//
+//        if (parseInt(bookingId) % 2 ==0 ){
+//            paymentDetail.setStatus("SUCCESS");
+//        } else {
+//            paymentDetail.setStatus("REJECTED");
+//        }
+//    }
 
 }
