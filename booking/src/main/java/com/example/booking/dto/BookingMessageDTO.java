@@ -1,7 +1,7 @@
 package com.example.booking.dto;
 
 public class BookingMessageDTO {
-    private Long bookingId;
+    private String bookingId;
 
     private Long flightId;
     private Integer numberOfSeats;
@@ -11,22 +11,31 @@ public class BookingMessageDTO {
     public BookingMessageDTO() {
     }
 
-    public BookingMessageDTO(Long bookingId, Long flightId, Integer numberOfSeats) {
+    public BookingMessageDTO(String bookingId, Long flightId, Integer numberOfSeats) {
         this.bookingId = bookingId;
         this.flightId = flightId;
         this.numberOfSeats = numberOfSeats;
     }
 
-    public BookingMessageDTO(Long bookingId, Boolean available) {
+    public BookingMessageDTO(String bookingId, Boolean available) {
         this.bookingId = bookingId;
         this.available = available;
     }
 
-    public Long getBookingId() {
+    @Override
+    public String toString() {
+        return "BookingMessageDTO{" +
+                "bookingId=" + bookingId +
+                ", flightId=" + flightId +
+                ", numberOfSeats=" + numberOfSeats +
+                '}';
+    }
+
+    public String getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(Long bookingId) {
+    public void setBookingId(String bookingId) {
         this.bookingId = bookingId;
     }
 

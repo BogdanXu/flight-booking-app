@@ -2,7 +2,7 @@ package com.example.booking.kafka.config;
 
 import com.example.booking.dto.BookingMessageDTO;
 import com.example.booking.dto.PaymentDetailConfirmationDTO;
-import com.example.booking.kafka.serializer.BookingSerializer;
+import com.example.booking.kafka.serializer.BookingMessageDTOSerializer;
 import com.example.booking.dto.PaymentDetailDTO;
 import com.example.booking.kafka.serializer.PaymentDetailConfirmationDTOSerializer;
 import com.example.booking.kafka.serializer.PaymentDetailDTOSerializer;
@@ -64,7 +64,7 @@ public class KafkaConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BookingSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BookingMessageDTOSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
@@ -80,8 +80,8 @@ public class KafkaConfig {
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "booking_group_id");
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BookingSerializer.class);
-        return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), new BookingSerializer());
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BookingMessageDTOSerializer.class);
+        return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), new BookingMessageDTOSerializer());
     }
 
     @Bean

@@ -9,7 +9,7 @@ import org.apache.kafka.common.serialization.Serializer;
 import java.io.IOException;
 import java.util.Map;
 
-public class BookingSerializer implements Serializer<BookingMessageDTO>, Deserializer<BookingMessageDTO> {
+public class BookingMessageDTOSerializer implements Serializer<BookingMessageDTO>, Deserializer<BookingMessageDTO> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

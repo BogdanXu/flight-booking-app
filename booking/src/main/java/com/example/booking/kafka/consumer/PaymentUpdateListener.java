@@ -1,5 +1,6 @@
 package com.example.booking.kafka.consumer;
 
+import com.example.booking.dto.BookingMessageDTO;
 import com.example.booking.dto.PaymentDetailConfirmationDTO;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
@@ -23,7 +24,9 @@ public class PaymentUpdateListener {
         BookingStatus newBookingStatus = getNewBookingStatus(paymentStatus);
         bookingRepository.findById(bookingId)
                 .flatMap(booking -> {
-                    booking.setBookingStatus(newBookingStatus);
+                    if (booking.getBookingStatus() != BookingStatus.REJECTED) {
+                        booking.setBookingStatus(newBookingStatus);
+                    }
                     return bookingRepository.save(booking);
                 })
                 .subscribe();
@@ -34,5 +37,20 @@ public class PaymentUpdateListener {
             return BookingStatus.REJECTED;
         } else
             return BookingStatus.SUCCESS;
+    }
+
+    @KafkaListener(topics = "booking-admin-confirmation", groupId = "booking_group_id", containerFactory = "bookingKafkaListenerContainerFactory")
+    public void listen(BookingMessageDTO bookingMessageDTO) {
+        String bookingId = bookingMessageDTO.getBookingId();
+        boolean confirmationStatus = bookingMessageDTO.getAvailable();
+        BookingStatus newBookingStatus = getNewBookingStatus(confirmationStatus);
+        bookingRepository.findById(bookingId)
+                .flatMap(booking -> {
+                    if (booking.getBookingStatus() != BookingStatus.REJECTED) {
+                        booking.setBookingStatus(newBookingStatus);
+                    }
+                    return bookingRepository.save(booking);
+                })
+                .subscribe();
     }
 }
