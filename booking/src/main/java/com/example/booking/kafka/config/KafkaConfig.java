@@ -100,4 +100,11 @@ public class KafkaConfig {
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, PaymentDetailConfirmationDTOSerializer.class);
         return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), new PaymentDetailConfirmationDTOSerializer());
     }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentDetailConfirmationDTO> paymentConfirmationKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PaymentDetailConfirmationDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(paymentDetailConfirmationDTOConsumerFactory());
+        return factory;
+    }
 }

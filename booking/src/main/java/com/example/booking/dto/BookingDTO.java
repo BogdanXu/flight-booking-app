@@ -1,21 +1,21 @@
 package com.example.booking.dto;
 
 import com.example.booking.model.BookingStatus;
-import com.example.booking.model.Flight;
+
 import java.time.LocalDateTime;
 
 public class BookingDTO {
-    private Flight flight;
+    private FlightDTO flight;
     private LocalDateTime bookingDate;
     private LocalDateTime expirationDate;
     private String seatNumber;
     private BookingStatus bookingStatus;
 
-    public Flight getFlight() {
+    public FlightDTO getFlight() {
         return flight;
     }
 
-    public void setFlight(Flight flight) {
+    public void setFlight(FlightDTO flight) {
         this.flight = flight;
     }
 

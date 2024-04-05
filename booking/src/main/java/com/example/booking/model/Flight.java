@@ -9,21 +9,21 @@ public class Flight {
     private String ticketPrice;
     private Integer seatsAvailable;
     private String flightDuration;
-    Destination departureAirport;
-    Destination arrivalAirport;
+    private String departureAirportCode;
+    private String arrivalAirportCode;
 
     public Flight() {
     }
 
-    public Flight(Long id, String flightCode, LocalDateTime flightDate, String ticketPrice, Integer seatsAvailable, String flightDuration, Destination departureAirport, Destination arrivalAirport) {
+    public Flight(Long id, String flightCode, LocalDateTime flightDate, String ticketPrice, Integer seatsAvailable, String flightDuration, String departureAirportCode, String arrivalAirportCode) {
         this.id = id;
         this.flightCode = flightCode;
         this.flightDate = flightDate;
         this.ticketPrice = ticketPrice;
         this.seatsAvailable = seatsAvailable;
         this.flightDuration = flightDuration;
-        this.departureAirport = departureAirport;
-        this.arrivalAirport = arrivalAirport;
+        this.departureAirportCode = departureAirportCode;
+        this.arrivalAirportCode = arrivalAirportCode;
     }
 
     public Long getId() {
@@ -46,8 +46,8 @@ public class Flight {
         return flightDate;
     }
 
-    public void setFlightDate(LocalDateTime date) {
-        this.flightDate = date;
+    public void setFlightDate(LocalDateTime flightDate) {
+        this.flightDate = flightDate;
     }
 
     public String getTicketPrice() {
@@ -74,20 +74,20 @@ public class Flight {
         this.flightDuration = flightDuration;
     }
 
-    public Destination getDepartureAirport() {
-        return departureAirport;
+    public String getDepartureAirportCode() {
+        return departureAirportCode;
     }
 
-    public void setDepartureAirport(Destination departureAirport) {
-        this.departureAirport = departureAirport;
+    public void setDepartureAirportCode(String departureAirportCode) {
+        this.departureAirportCode = departureAirportCode;
     }
 
-    public Destination getArrivalAirport() {
-        return arrivalAirport;
+    public String getArrivalAirportCode() {
+        return arrivalAirportCode;
     }
 
-    public void setArrivalAirport(Destination arrivalAirport) {
-        this.arrivalAirport = arrivalAirport;
+    public void setArrivalAirportCode(String arrivalAirportCode) {
+        this.arrivalAirportCode = arrivalAirportCode;
     }
 
     @Override
@@ -95,12 +95,12 @@ public class Flight {
         return "Flight{" +
                 "id=" + id +
                 ", flightCode='" + flightCode + '\'' +
-                ", date=" + flightDate +
+                ", flightDate=" + flightDate +
                 ", ticketPrice='" + ticketPrice + '\'' +
                 ", seatsAvailable=" + seatsAvailable +
                 ", flightDuration='" + flightDuration + '\'' +
-                ", departureAirport=" + departureAirport +
-                ", arrivalAirport=" + arrivalAirport +
+                ", departureAirportCode='" + departureAirportCode + '\'' +
+                ", arrivalAirportCode='" + arrivalAirportCode + '\'' +
                 '}';
     }
 }

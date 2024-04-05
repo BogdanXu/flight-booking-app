@@ -2,6 +2,7 @@ package com.payments.payments.kafka.config;
 
 import com.payments.payments.dto.PaymentDetailConfirmationDTO;
 import com.payments.payments.dto.PaymentDetailDTO;
+import com.payments.payments.serializer.PaymentDetailCofirmationDTOSerializer;
 import com.payments.payments.serializer.PaymentDetailDTOSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -27,7 +28,7 @@ public class KafkaConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, PaymentDetailDTOSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, PaymentDetailCofirmationDTOSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

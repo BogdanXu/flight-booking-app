@@ -1,7 +1,7 @@
 package com.example.booking.service;
 
 import com.example.booking.dto.BookingDTO;
-import com.example.booking.model.Booking;
+import com.example.booking.mappers.BookingMapper;
 import com.example.booking.model.BookingStatus;
 import com.example.booking.dto.PaymentDetailDTO;
 import com.example.booking.repository.BookingRepository;
@@ -9,8 +9,12 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 @Service
 public class BookingService {
+
+    private final int expirationTime = 1;
 
     private final KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate;
 
@@ -23,14 +27,17 @@ public class BookingService {
 
     public Mono<BookingDTO> saveBooking(BookingDTO bookingDTO) {
         bookingDTO.setBookingStatus(BookingStatus.RESERVED);
-        return bookingRepository.save(mapToEntity(bookingDTO))
+        bookingDTO.setBookingDate(LocalDateTime.now());
+        bookingDTO.setExpirationDate(LocalDateTime.now().plusHours(expirationTime));
+
+        return bookingRepository.save(BookingMapper.fromDTO(bookingDTO))
                 .doOnSuccess(booking -> sendPaymentRequest(booking.getId()))
-                .map(this::mapToDTO);
+                .map(BookingMapper::toDTO);
     }
 
     public Mono<BookingDTO> findById(String id) {
         return bookingRepository.findById(id)
-                .map(this::mapToDTO);
+                .map(BookingMapper::toDTO);
     }
 
     private void sendPaymentRequest(String bookingId) {
@@ -39,23 +46,4 @@ public class BookingService {
         System.out.println("Sent message to Kafka topic payment-request:" + paymentDetailDTO);
     }
 
-    private Booking mapToEntity(BookingDTO bookingDTO) {
-        Booking booking = new Booking();
-        booking.setFlight(bookingDTO.getFlight());
-        booking.setBookingDate(bookingDTO.getBookingDate());
-        booking.setExpirationDate(bookingDTO.getExpirationDate());
-        booking.setSeatNumber(bookingDTO.getSeatNumber());
-        booking.setBookingStatus(bookingDTO.getBookingStatus());
-        return booking;
-    }
-
-    private BookingDTO mapToDTO(Booking booking) {
-        BookingDTO bookingDTO = new BookingDTO();
-        bookingDTO.setFlight(booking.getFlight());
-        bookingDTO.setBookingDate(booking.getBookingDate());
-        bookingDTO.setExpirationDate(booking.getExpirationDate());
-        bookingDTO.setSeatNumber(booking.getSeatNumber());
-        bookingDTO.setBookingStatus(booking.getBookingStatus());
-        return bookingDTO;
-    }
 }
