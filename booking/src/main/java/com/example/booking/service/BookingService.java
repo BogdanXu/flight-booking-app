@@ -4,6 +4,7 @@ import com.example.booking.dto.BookingDTO;
 import com.example.booking.dto.BookingMessageDTO;
 import com.example.booking.dto.ExtendedBookingDTO;
 import com.example.booking.mappers.BookingMapper;
+import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
 import com.example.booking.dto.PaymentDetailDTO;
 import com.example.booking.repository.BookingRepository;
@@ -77,9 +78,14 @@ public class BookingService {
                     logger.info("Booking reservation expired: {}", booking);
                     logger.info("Setting booking status to rejected for booking: {}", booking.getId());
                     booking.setBookingStatus(BookingStatus.REJECTED);
+                    sendRejectedBookingToAdmin(booking);
                     bookingRepository.save(booking).subscribe();
                 })
                 .subscribe();
+    }
+
+    private void sendRejectedBookingToAdmin(Booking booking){
+        kafkaAdminTemplate.send("booking-rejected", new BookingMessageDTO(booking.getId(), booking.getFlight().getId(), booking.getSeats().size()));
     }
 
 }

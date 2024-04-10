@@ -5,6 +5,8 @@ import com.example.booking.dto.PaymentDetailConfirmationDTO;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
 import com.example.booking.repository.BookingRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,8 @@ public class PaymentUpdateListener {
 
     private final BookingRepository bookingRepository;
     private final KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate;
+
+    private final Logger logger = LoggerFactory.getLogger(PaymentUpdateListener.class);
 
     public PaymentUpdateListener(BookingRepository bookingRepository, KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate) {
         this.bookingRepository = bookingRepository;
