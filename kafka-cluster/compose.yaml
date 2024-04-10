@@ -87,6 +87,9 @@ services:
     build:
       context: ../admin
       dockerfile: Dockerfile
+    depends_on:
+      - admin-postgres
+      - broker
     ports:
       - "8080:8080"
     environment:
@@ -103,6 +106,9 @@ services:
     build:
       context: ../payments
       dockerfile: Dockerfile
+    depends_on:
+      - payments-mongo_db
+      - broker
     ports:
       - 8089:8080
     environment:
@@ -141,6 +147,8 @@ services:
     build:
       context: ../operator
       dockerfile: Dockerfile
+    depends_on:
+      - operator-postgres
     ports:
       - "8282:8282"
     environment:
@@ -157,6 +165,8 @@ services:
     build:
       context: ../operator
       dockerfile: Dockerfile
+    depends_on:
+      - operator-postgres
     ports:
       - "8383:8282"
     environment:
@@ -182,8 +192,10 @@ services:
     build:
       context: ../notification
       dockerfile: Dockerfile
+    depends_on:
+      - notifications-mongo_db
     ports:
-      - 8089:8080
+      - 8090:8080
     environment:
       SPRING_DATA_MONGODB_URI: "mongodb://root:123456@notifications-mongo_db:27017/notification_db?authSource=admin"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:9092"
