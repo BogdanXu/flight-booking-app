@@ -2,6 +2,7 @@ package com.example.booking.service;
 
 import com.example.booking.dto.BookingDTO;
 import com.example.booking.dto.BookingMessageDTO;
+import com.example.booking.dto.ExtendedBookingDTO;
 import com.example.booking.mappers.BookingMapper;
 import com.example.booking.model.BookingStatus;
 import com.example.booking.dto.PaymentDetailDTO;
@@ -29,15 +30,19 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    public Mono<BookingDTO> saveBooking(BookingDTO bookingDTO) {
+    public Mono<BookingDTO> saveBooking(ExtendedBookingDTO bookingDTO) {
         bookingDTO.setBookingStatus(BookingStatus.RESERVED);
         bookingDTO.setBookingDate(LocalDateTime.now());
         bookingDTO.setExpirationDate(LocalDateTime.now().plusHours(expirationTime));
 
+        String clientIban = bookingDTO.getClientIban();
+        String operatorIban = bookingDTO.getOperatorIban();
+        Integer sum = bookingDTO.getSum();
+
         return bookingRepository.save(BookingMapper.fromDTO(bookingDTO))
                 .doOnSuccess(booking -> {
-                    sendPaymentRequest(booking.getId());
-                    sendAdminConfirmation(new BookingMessageDTO(booking.getId(),booking.getFlight().getId(),1));
+                    sendPaymentRequest(booking.getId(), clientIban, operatorIban, sum);
+                    sendAdminConfirmation(new BookingMessageDTO(booking.getId(), booking.getFlight().getId(), booking.getSeats().size()));
                 })
                 .map(BookingMapper::toDTO);
     }
@@ -47,8 +52,8 @@ public class BookingService {
                 .map(BookingMapper::toDTO);
     }
 
-    private void sendPaymentRequest(String bookingId) {
-        PaymentDetailDTO paymentDetailDTO = new PaymentDetailDTO(bookingId, "clientIban", "operatorIban", 100);
+    private void sendPaymentRequest(String bookingId, String clientIban, String operatorIban, Integer sum) {
+        PaymentDetailDTO paymentDetailDTO = new PaymentDetailDTO(bookingId, clientIban, operatorIban, sum);
         kafkaTemplate.send("payment-request", paymentDetailDTO);
         System.out.println("Sent message to Kafka topic payment-request:" + paymentDetailDTO);
     }

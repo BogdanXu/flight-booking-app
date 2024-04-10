@@ -1,7 +1,7 @@
 package com.example.booking.controller;
 
 import com.example.booking.dto.BookingDTO;
-import com.example.booking.model.Booking;
+import com.example.booking.dto.ExtendedBookingDTO;
 import com.example.booking.service.BookingService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -17,7 +17,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public Mono<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
+    public Mono<BookingDTO> createBooking(@RequestBody ExtendedBookingDTO bookingDTO) {
         return bookingService.saveBooking(bookingDTO);
     }
 

@@ -2,13 +2,20 @@ package com.example.booking.dto;
 
 import com.example.booking.model.BookingStatus;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class BookingDTO {
     private FlightDTO flight;
+
     private LocalDateTime bookingDate;
+
     private LocalDateTime expirationDate;
-    private String seatNumber;
+
+    @NotEmpty(message = "Seats list must not be empty")
+    private List<String> seats;
+
     private BookingStatus bookingStatus;
 
     public FlightDTO getFlight() {
@@ -35,12 +42,12 @@ public class BookingDTO {
         this.expirationDate = expirationDate;
     }
 
-    public String getSeatNumber() {
-        return seatNumber;
+    public List<String> getSeats() {
+        return seats;
     }
 
-    public void setSeatNumber(String seatNumber) {
-        this.seatNumber = seatNumber;
+    public void setSeats(List<String> seats) {
+        this.seats = seats;
     }
 
     public BookingStatus getBookingStatus() {

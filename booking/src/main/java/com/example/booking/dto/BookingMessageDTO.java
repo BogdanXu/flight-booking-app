@@ -4,6 +4,7 @@ public class BookingMessageDTO {
     private String bookingId;
 
     private Long flightId;
+
     private Integer numberOfSeats;
 
     private Boolean available;

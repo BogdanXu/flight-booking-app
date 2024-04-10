@@ -15,7 +15,7 @@ public class BookingMapper {
         bookingDTO.setFlight(FlightMapper.toDTO(booking.getFlight()));
         bookingDTO.setBookingDate(booking.getBookingDate());
         bookingDTO.setExpirationDate(booking.getExpirationDate());
-        bookingDTO.setSeatNumber(booking.getSeatNumber());
+        bookingDTO.setSeats(booking.getSeats());
         bookingDTO.setBookingStatus(booking.getBookingStatus());
         return bookingDTO;
     }
@@ -25,7 +25,7 @@ public class BookingMapper {
         booking.setFlight(FlightMapper.fromDTO(bookingDTO.getFlight()));
         booking.setBookingDate(bookingDTO.getBookingDate());
         booking.setExpirationDate(bookingDTO.getExpirationDate());
-        booking.setSeatNumber(bookingDTO.getSeatNumber());
+        booking.setSeats(bookingDTO.getSeats());
         booking.setBookingStatus(bookingDTO.getBookingStatus());
         return booking;
     }
