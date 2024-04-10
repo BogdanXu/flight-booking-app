@@ -177,12 +177,39 @@ services:
       - "8082:8082"
     networks:
       - kafka-net
+  notifications-be:
+    container_name: notifications-be
+    build:
+      context: ../notification
+      dockerfile: Dockerfile
+    ports:
+      - 8089:8080
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@notifications-mongo_db:27017/notification_db?authSource=admin"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:9092"
+    volumes:
+      - payments-db:/data/db
+    networks:
+      - kafka-net
+  notifications-mongo_db:
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    ports:
+      - 7020:27017
+    volumes:
+      - notification-db:/data/db
+    networks:
+      - kafka-net
 volumes:
   booking-db:
   mongo-db:
   admin-postgres-data:
   payments-db:
   operator-vol-postgres:
+  notification-db:
 networks:
   kafka-net:
     driver: bridge
