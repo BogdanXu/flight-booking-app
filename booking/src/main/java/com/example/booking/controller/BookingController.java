@@ -6,6 +6,8 @@ import com.example.booking.service.BookingService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
@@ -17,7 +19,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public Mono<BookingDTO> createBooking(@RequestBody ExtendedBookingDTO bookingDTO) {
+    public Mono<BookingDTO> createBooking(@RequestBody @Valid ExtendedBookingDTO bookingDTO) {
         return bookingService.saveBooking(bookingDTO);
     }
 

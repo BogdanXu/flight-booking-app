@@ -7,12 +7,16 @@ import com.example.booking.mappers.BookingMapper;
 import com.example.booking.model.BookingStatus;
 import com.example.booking.dto.PaymentDetailDTO;
 import com.example.booking.repository.BookingRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class BookingService {
@@ -21,6 +25,8 @@ public class BookingService {
 
     private final KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate;
     private final KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate;
+
+    private final Logger logger = LoggerFactory.getLogger(BookingService.class);
 
     private final BookingRepository bookingRepository;
 
@@ -55,17 +61,25 @@ public class BookingService {
     private void sendPaymentRequest(String bookingId, String clientIban, String operatorIban, Integer sum) {
         PaymentDetailDTO paymentDetailDTO = new PaymentDetailDTO(bookingId, clientIban, operatorIban, sum);
         kafkaTemplate.send("payment-request", paymentDetailDTO);
-        System.out.println("Sent message to Kafka topic payment-request:" + paymentDetailDTO);
+        logger.info("Sent message to Kafka topic payment-request: {}", paymentDetailDTO);
     }
 
     private void sendAdminConfirmation(BookingMessageDTO bookingMessageDTO){
         kafkaAdminTemplate.send("booking-reserved",bookingMessageDTO);
-        System.out.println("Sent message to Kafka topic booking-reserved:" + bookingMessageDTO);
+        logger.info("Sent message to Kafka topic booking-reserved: {}", bookingMessageDTO);
     }
 
-    @Scheduled(cron = "* * * * *")
-    public void checkExpiredBookings(){
-        bookingRepository.updateBookingStatusToRejectedByExpirationDateBefore(LocalDateTime.now()).block();
+    @Scheduled(cron = "*/10 * * * * *")
+    public void checkExpiredBookings() {
+        logger.info("Cron job running...");
+        bookingRepository.findBookingsByBookingStatusNotInAndExpirationDateBefore(List.of(BookingStatus.SUCCESS, BookingStatus.REJECTED), LocalDateTime.now())
+                .doOnNext(booking -> {
+                    logger.info("Booking reservation expired: {}", booking);
+                    logger.info("Setting booking status to rejected for booking: {}", booking.getId());
+                    booking.setBookingStatus(BookingStatus.REJECTED);
+                    bookingRepository.save(booking).subscribe();
+                })
+                .subscribe();
     }
 
 }
