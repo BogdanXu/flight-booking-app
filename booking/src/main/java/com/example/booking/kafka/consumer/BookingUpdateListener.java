@@ -1,6 +1,7 @@
 package com.example.booking.kafka.consumer;
 
 import com.example.booking.dto.BookingMessageDTO;
+import com.example.booking.dto.NotificationDTO;
 import com.example.booking.dto.PaymentDetailConfirmationDTO;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
@@ -12,16 +13,18 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PaymentUpdateListener {
+public class BookingUpdateListener {
 
     private final BookingRepository bookingRepository;
     private final KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate;
+    private final KafkaTemplate<String, NotificationDTO> kafkaNotificationTemplate;
 
-    private final Logger logger = LoggerFactory.getLogger(PaymentUpdateListener.class);
+    private final Logger logger = LoggerFactory.getLogger(BookingUpdateListener.class);
 
-    public PaymentUpdateListener(BookingRepository bookingRepository, KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate) {
+    public BookingUpdateListener(BookingRepository bookingRepository, KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate, KafkaTemplate<String, NotificationDTO> kafkaNotificationTemplate) {
         this.bookingRepository = bookingRepository;
         this.kafkaAdminTemplate = kafkaAdminTemplate;
+        this.kafkaNotificationTemplate = kafkaNotificationTemplate;
     }
 
     @KafkaListener(topics = "payment-request-confirmation", groupId = "payment_group_id", containerFactory = "paymentConfirmationKafkaListenerContainerFactory")
@@ -44,6 +47,7 @@ public class PaymentUpdateListener {
                             sendRejectedBookingToAdmin(booking);
                         }
                     }
+                    kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
                     return bookingRepository.save(booking);
                 })
                 .subscribe();
@@ -76,6 +80,7 @@ public class PaymentUpdateListener {
                     if (booking.getBookingStatus() == BookingStatus.ACCEPTED_BY_PAYMENT) {
                         booking.setBookingStatus(newBookingStatus);
                     }
+                    kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
                     return bookingRepository.save(booking);
                 })
                 .subscribe();
