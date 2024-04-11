@@ -1,9 +1,11 @@
 package com.example.booking.kafka.config;
 
 import com.example.booking.dto.BookingMessageDTO;
+import com.example.booking.dto.NotificationDTO;
 import com.example.booking.dto.PaymentDetailConfirmationDTO;
 import com.example.booking.kafka.serializer.BookingMessageDTOSerializer;
 import com.example.booking.dto.PaymentDetailDTO;
+import com.example.booking.kafka.serializer.NotificationDTOSerializer;
 import com.example.booking.kafka.serializer.PaymentDetailConfirmationDTOSerializer;
 import com.example.booking.kafka.serializer.PaymentDetailDTOSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -71,6 +73,21 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String, BookingMessageDTO> bookingKafkaTemplate() {
         return new KafkaTemplate<>(bookingProducerFactory());
+    }
+
+    // ProducerFactory and KafkaTemplate for NotificationDTO entity
+    @Bean
+    public ProducerFactory<String, NotificationDTO> notificationProducerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, NotificationDTOSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, NotificationDTO> notificationKafkaTemplate() {
+        return new KafkaTemplate<>(notificationProducerFactory());
     }
 
     // ConsumerFactory and KafkaListenerContainerFactory for BookingMessageDTO entity

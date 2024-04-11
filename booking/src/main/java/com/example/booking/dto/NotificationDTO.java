@@ -9,6 +9,11 @@ public class NotificationDTO {
     public NotificationDTO() {
     }
 
+    public NotificationDTO(String bookingId, String message) {
+        this.bookingId = bookingId;
+        this.message = message;
+    }
+
     public NotificationDTO(String id, String bookingId, String message) {
         this.id = id;
         this.bookingId = bookingId;

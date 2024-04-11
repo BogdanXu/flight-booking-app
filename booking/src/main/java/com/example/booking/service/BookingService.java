@@ -1,12 +1,9 @@
 package com.example.booking.service;
 
-import com.example.booking.dto.BookingDTO;
-import com.example.booking.dto.BookingMessageDTO;
-import com.example.booking.dto.ExtendedBookingDTO;
+import com.example.booking.dto.*;
 import com.example.booking.mappers.BookingMapper;
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingStatus;
-import com.example.booking.dto.PaymentDetailDTO;
 import com.example.booking.repository.BookingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +23,16 @@ public class BookingService {
 
     private final KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate;
     private final KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate;
+    private final KafkaTemplate<String, NotificationDTO> kafkaNotificationTemplate;
 
     private final Logger logger = LoggerFactory.getLogger(BookingService.class);
 
     private final BookingRepository bookingRepository;
 
-    public BookingService(KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate, KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate, BookingRepository bookingRepository) {
+    public BookingService(KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate, KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate, KafkaTemplate<String, NotificationDTO> kafkaNotificationTemplate, BookingRepository bookingRepository) {
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaAdminTemplate = kafkaAdminTemplate;
+        this.kafkaNotificationTemplate = kafkaNotificationTemplate;
         this.bookingRepository = bookingRepository;
     }
 
@@ -48,6 +47,7 @@ public class BookingService {
 
         return bookingRepository.save(BookingMapper.fromDTO(bookingDTO))
                 .doOnSuccess(booking -> {
+                    kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
                     sendPaymentRequest(booking.getId(), clientIban, operatorIban, sum);
                     sendAdminConfirmation(new BookingMessageDTO(booking.getId(), booking.getFlight().getId(), booking.getSeats().size()));
                 })
@@ -79,6 +79,7 @@ public class BookingService {
                     logger.info("Setting booking status to rejected for booking: {}", booking.getId());
                     booking.setBookingStatus(BookingStatus.REJECTED);
                     sendRejectedBookingToAdmin(booking);
+                    kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
                     bookingRepository.save(booking).subscribe();
                 })
                 .subscribe();
