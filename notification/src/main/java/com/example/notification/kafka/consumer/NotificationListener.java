@@ -1,11 +1,10 @@
-package kafka.consumer;
+package com.example.notification.kafka.consumer;
 
-import dto.NotificationDTO;
-import mapper.NotificationMapper;
+import com.example.notification.dto.NotificationDTO;
+import com.example.notification.mapper.NotificationMapper;
+import com.example.notification.repository.NotificationRepository;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import repository.NotificationRepository;
 
 @Component
 public class NotificationListener {

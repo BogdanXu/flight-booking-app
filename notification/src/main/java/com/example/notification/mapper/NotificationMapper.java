@@ -1,8 +1,10 @@
-package mapper;
+package com.example.notification.mapper;
 
-import dto.NotificationDTO;
-import model.Notification;
+import com.example.notification.dto.NotificationDTO;
+import com.example.notification.model.Notification;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NotificationMapper {
 
     public Notification toEntity(NotificationDTO dto) {

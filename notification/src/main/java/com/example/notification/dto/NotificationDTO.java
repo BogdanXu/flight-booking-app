@@ -1,4 +1,4 @@
-package dto;
+package com.example.notification.dto;
 
 public class NotificationDTO {
     private String id;

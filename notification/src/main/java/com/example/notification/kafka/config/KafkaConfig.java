@@ -1,7 +1,7 @@
-package kafka.config;
+package com.example.notification.kafka.config;
 
-import dto.NotificationDTO;
-import kafka.serializer.NotificationSerializer;
+import com.example.notification.dto.NotificationDTO;
+import com.example.notification.kafka.serializer.NotificationSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

@@ -195,7 +195,7 @@ services:
     depends_on:
       - notifications-mongo_db
     ports:
-      - 8090:8080
+      - 8090:8084
     environment:
       SPRING_DATA_MONGODB_URI: "mongodb://root:123456@notifications-mongo_db:27017/notification_db?authSource=admin"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:9092"

@@ -1,7 +1,7 @@
-package kafka.serializer;
+package com.example.notification.kafka.serializer;
 
+import com.example.notification.dto.NotificationDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dto.NotificationDTO;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;

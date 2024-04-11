@@ -1,11 +1,10 @@
-package service;
+package com.example.notification.service;
 
-import dto.NotificationDTO;
-import mapper.NotificationMapper;
+import com.example.notification.mapper.NotificationMapper;
+import com.example.notification.repository.NotificationRepository;
+import com.example.notification.dto.NotificationDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import repository.NotificationRepository;
 
 @Service
 public class NotificationService {
