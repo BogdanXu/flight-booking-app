@@ -13,6 +13,10 @@ public class PaymentDetailDTO {
         this.sum = sum;
     }
 
+    public PaymentDetailDTO(String bookingId) {
+        this.bookingId = bookingId;
+    }
+
     public String getBookingId() {
         return bookingId;
     }

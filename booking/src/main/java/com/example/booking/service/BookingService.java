@@ -11,7 +11,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +20,7 @@ public class BookingService {
 
     private final int expirationTime = 1;
 
-    private final KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate;
+    private final KafkaTemplate<String, PaymentDetailDTO> kafkaPaymentTemplate;
     private final KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate;
     private final KafkaTemplate<String, NotificationDTO> kafkaNotificationTemplate;
 
@@ -29,8 +28,8 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
 
-    public BookingService(KafkaTemplate<String, PaymentDetailDTO> kafkaTemplate, KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate, KafkaTemplate<String, NotificationDTO> kafkaNotificationTemplate, BookingRepository bookingRepository) {
-        this.kafkaTemplate = kafkaTemplate;
+    public BookingService(KafkaTemplate<String, PaymentDetailDTO> kafkaPaymentTemplate, KafkaTemplate<String, BookingMessageDTO> kafkaAdminTemplate, KafkaTemplate<String, NotificationDTO> kafkaNotificationTemplate, BookingRepository bookingRepository) {
+        this.kafkaPaymentTemplate = kafkaPaymentTemplate;
         this.kafkaAdminTemplate = kafkaAdminTemplate;
         this.kafkaNotificationTemplate = kafkaNotificationTemplate;
         this.bookingRepository = bookingRepository;
@@ -61,7 +60,7 @@ public class BookingService {
 
     private void sendPaymentRequest(String bookingId, String clientIban, String operatorIban, Integer sum) {
         PaymentDetailDTO paymentDetailDTO = new PaymentDetailDTO(bookingId, clientIban, operatorIban, sum);
-        kafkaTemplate.send("payment-request", paymentDetailDTO);
+        kafkaPaymentTemplate.send("payment-request", paymentDetailDTO);
         logger.info("Sent message to Kafka topic payment-request: {}", paymentDetailDTO);
     }
 
