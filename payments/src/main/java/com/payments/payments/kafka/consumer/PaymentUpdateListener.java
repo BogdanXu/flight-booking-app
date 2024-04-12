@@ -33,29 +33,73 @@ public class PaymentUpdateListener {
     @KafkaListener(topics = "payment-request")
     public void listen(PaymentDetailDTO paymentDetailDTO) {
 
-
         PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
-        paymentDetailRepository.save(paymentDetail).subscribe();
 
         log.info("paymentDetail obj: " + paymentDetail.toString());
 
-        boolean confirmPayment = paymentService.verifyPayment(paymentDetail.getBookingId()).block();
+        paymentService.verifyPayment(paymentDetail)
+                .doOnSuccess(confirmPayment -> {
+                    if (Boolean.TRUE.equals(confirmPayment)) {
+                        paymentDetail.setStatus("ACCEPTED");
+                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
+                        paymentDetailRepository.save(paymentDetail).subscribe();
+                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+                    } else {
+                        paymentDetail.setStatus("REJECTED");
+                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
+                        paymentDetailRepository.save(paymentDetail).subscribe();
+                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+                    }
+                })
+                .subscribe();
 
-        log.info("confirmPayment boolean : " + confirmPayment);
 
-        if (confirmPayment) {
-            paymentDetail.setStatus("ACCEPTED");
-            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
-            paymentDetailRepository.save(paymentDetail).subscribe();
+//
+//
+//        PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
+////        paymentDetailRepository.save(paymentDetail).subscribe();
+//
+//        log.info("paymentDetail obj: " + paymentDetail.toString());
+//
+////        boolean confirmPayment = paymentService.verifyPayment(paymentDetail.getBookingId()).block();
+//
+////        log.info("confirmPayment boolean : " + confirmPayment);
+//
+//        paymentService.verifyPayment(paymentDetail.getBookingId())
+//                .doOnSuccess(confirmPayment -> {
+//                    if (Boolean.TRUE.equals(confirmPayment)) {
+//                        paymentDetail.setStatus("ACCEPTED");
+//                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+//                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
+//                        // The save operation should also be reactive
+//                        paymentDetailRepository.save(paymentDetail).subscribe();
+//                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+//                    } else {
+//                        paymentDetail.setStatus("REJECTED");
+//                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+//                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
+//                        paymentDetailRepository.save(paymentDetail).subscribe();
+//                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+//                    }
+//                })
+//                .subscribe();
 
-            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-        } else {
-            paymentDetail.setStatus("REJECTED");
-            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
-            paymentDetailRepository.save(paymentDetail).subscribe();
-
-            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-        }
+//////////////////
+//        if (confirmPayment) {
+//            paymentDetail.setStatus("ACCEPTED");
+//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
+//            paymentDetailRepository.save(paymentDetail).subscribe();
+//
+//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+//        } else {
+//            paymentDetail.setStatus("REJECTED");
+//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
+//            paymentDetailRepository.save(paymentDetail).subscribe();
+//
+//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+//        }
 
     }
 
