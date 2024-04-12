@@ -8,13 +8,9 @@ import com.payments.payments.repository.PaymentDetailRepository;
 import com.payments.payments.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 
 @Component
@@ -41,9 +37,13 @@ public class PaymentUpdateListener {
         PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
         paymentDetailRepository.save(paymentDetail).subscribe();
 
-        Boolean confirmPayment = paymentService.verifyPayment(paymentDetail.getBookingId()).block();
+        log.info("paymentDetail obj: " + paymentDetail.toString());
 
-        if (Boolean.TRUE.equals(confirmPayment)) {
+        boolean confirmPayment = paymentService.verifyPayment(paymentDetail.getBookingId()).block();
+
+        log.info("confirmPayment boolean : " + confirmPayment);
+
+        if (confirmPayment) {
             paymentDetail.setStatus("ACCEPTED");
             PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
             paymentDetailRepository.save(paymentDetail).subscribe();
@@ -52,20 +52,10 @@ public class PaymentUpdateListener {
         } else {
             paymentDetail.setStatus("REJECTED");
             PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
+            paymentDetailRepository.save(paymentDetail).subscribe();
+
             kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
         }
-
-//        if(paymentDetail.getAmount() > 90){
-//            paymentDetail.setStatus("REJECTED");
-//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
-//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO );
-//        }else {
-//            paymentDetail.setStatus("Accepted");
-//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
-//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-//        }
-//        paymentDetailRepository.save(paymentDetail).subscribe();
-//    }
 
     }
 
