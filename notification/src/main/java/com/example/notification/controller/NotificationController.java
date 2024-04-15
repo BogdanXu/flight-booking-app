@@ -1,9 +1,10 @@
 package com.example.notification.controller;
 
 import com.example.notification.dto.NotificationDTO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.notification.model.Notification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import com.example.notification.service.NotificationService;
 
@@ -17,7 +18,17 @@ public class NotificationController {
     }
 
     @GetMapping()
-    public Flux<NotificationDTO> getBookingById() {
+    public Iterable<Notification> getNotificationById() {
         return notificationService.findAll();
+    }
+
+    @PostMapping()
+    public ResponseEntity<String> saveNotification(@RequestBody Notification notification) {
+        try {
+            Notification savedNotification = notificationService.saveNotification(notification);
+            return new ResponseEntity<>("Notification saved with ID: " + savedNotification.getId(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

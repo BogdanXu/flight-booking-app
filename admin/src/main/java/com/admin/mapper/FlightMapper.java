@@ -5,8 +5,6 @@ import com.admin.model.Flight;
 import com.admin.model.Operator;
 import com.admin.repository.OperatorRepository;
 import com.admin.service.DestinationService;
-import com.admin.service.OperatorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,8 +30,8 @@ public class FlightMapper {
         flightDTO.setSeatsAvailable(flight.getSeatsAvailable());
         flightDTO.setFlightDuration(flight.getFlightDuration());
         flightDTO.setOperatorId(OperatorMapper.toDTO(flight.getOperator()).getId());
-        flightDTO.setDepartureAirport(DestinationMapper.toDTO(flight.getDepartureAirport()).getCodAirport());
-        flightDTO.setArrivalAirport(DestinationMapper.toDTO(flight.getArrivalAirport()).getCodAirport());
+        flightDTO.setDepartureAirportCode(DestinationMapper.toDTO(flight.getDepartureAirport()).getCodAirport());
+        flightDTO.setArrivalAirportCode(DestinationMapper.toDTO(flight.getArrivalAirport()).getCodAirport());
 
         return flightDTO;
     }
@@ -52,8 +50,8 @@ public class FlightMapper {
         flight.setFlightDuration(flightDTO.getFlightDuration());
         Operator operator = operatorRepository.findById(flightDTO.getOperatorId()).get();
         flight.setOperator(operator);
-        flight.setDepartureAirport(destinationService.findDestinationByAirportCode(flightDTO.getDepartureAirport()));
-        flight.setArrivalAirport(destinationService.findDestinationByAirportCode(flightDTO.getArrivalAirport()));
+        flight.setDepartureAirport(destinationService.findDestinationByAirportCode(flightDTO.getDepartureAirportCode()));
+        flight.setArrivalAirport(destinationService.findDestinationByAirportCode(flightDTO.getArrivalAirportCode()));
 
         return flight;
     }

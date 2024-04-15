@@ -2,12 +2,10 @@ package com.admin.service;
 
 import com.admin.dto.FlightDTO;
 import com.admin.mapper.FlightMapper;
-import com.admin.mapper.OperatorMapper;
 import com.admin.model.Flight;
 import com.admin.model.Operator;
 import com.admin.repository.FlightRepository;
 import com.admin.repository.OperatorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,8 +66,8 @@ public class FlightService {
             flight.setFlightDuration(flightDTO.getFlightDuration());
             Operator operator = operatorRepository.findById(flightDTO.getOperatorId()).get();
             flight.setOperator(operator);
-            flight.setDepartureAirport(destinationService.findDestinationByAirportCode(flightDTO.getDepartureAirport()));
-            flight.setArrivalAirport(destinationService.findDestinationByAirportCode(flightDTO.getArrivalAirport()));
+            flight.setDepartureAirport(destinationService.findDestinationByAirportCode(flightDTO.getDepartureAirportCode()));
+            flight.setArrivalAirport(destinationService.findDestinationByAirportCode(flightDTO.getArrivalAirportCode()));
             return FlightMapper.toDTO(flightRepository.save(flight));
         } else {
             return null;

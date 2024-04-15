@@ -1,9 +1,9 @@
 package com.example.notification.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(collection = "notifications")
+@Document(indexName = "notifications")
 public class Notification {
     @Id
     private String id;
