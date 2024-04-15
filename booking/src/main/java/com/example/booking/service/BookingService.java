@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,10 +47,11 @@ public class BookingService {
 
         return bookingRepository.save(BookingMapper.fromDTO(bookingDTO))
                 .doOnSuccess(booking -> {
-                    kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
+                    kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(), "Booking updated to status " + booking.getBookingStatus()));
                     sendPaymentRequest(booking.getId(), clientIban, operatorIban, sum);
-                    sendAdminConfirmation(new BookingMessageDTO(booking.getId(), booking.getFlight().getId(), booking.getSeats().size()));
                 })
+                .delayElement(Duration.ofMillis(100))
+                .doOnSuccess(booking -> sendAdminConfirmation(new BookingMessageDTO(booking.getId(), booking.getFlight().getId(), booking.getSeats().size())))
                 .map(BookingMapper::toDTO);
     }
 
