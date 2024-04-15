@@ -55,6 +55,7 @@ public class BookingService {
                 .map(BookingMapper::toDTO);
     }
 
+
     public Mono<BookingDTO> findById(String id) {
         return bookingRepository.findById(id)
                 .map(BookingMapper::toDTO);
