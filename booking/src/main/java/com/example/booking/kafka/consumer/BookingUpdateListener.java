@@ -38,21 +38,29 @@ public class BookingUpdateListener {
                 .flatMap(booking -> {
                     //Payment confirmation is received first here
                     if(booking.getBookingStatus() == BookingStatus.RESERVED){
+                        logger.info("Payment message received first, booking has status RESERVED: {}", bookingId );
                         if(paymentStatus){
+                            logger.info("Payment message confirmed, booking has status ACCEPTED_BY_PAYMENT: {}", bookingId );
                             booking.setBookingStatus(BookingStatus.ACCEPTED_BY_PAYMENT);
-                        } else
+                        } else {
+                            logger.info("Payment message rejected, booking has status REJECTED: {}", bookingId);
                             booking.setBookingStatus(BookingStatus.REJECTED);
+                        }
                     }
                     //Payment confirmation comes after Admin has received ok
                     if (booking.getBookingStatus() == BookingStatus.ACCEPTED_BY_ADMIN) {
+                        logger.info("Payment message received second, booking has status ACCEPTED_BY_ADMIN: {}", bookingId );
                         if(paymentStatus){
                             booking.setBookingStatus(BookingStatus.SUCCESS);
+                            logger.info("Payment message confirmed, booking has status SUCCESS: {}", bookingId );
                         } else {
+                            logger.info("Payment message rejected, booking has status REJECTED, sending revert to ADMIN: {}", bookingId );
                             booking.setBookingStatus(BookingStatus.REJECTED);
                             sendRejectedBookingToAdmin(booking);
                         }
                     }
                     kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
+                    logger.info("payment saved booking: {}",  booking);
                     return bookingRepository.save(booking);
                 })
                 .subscribe();
@@ -71,26 +79,35 @@ public class BookingUpdateListener {
 
     @KafkaListener(topics = "booking-admin-confirmation", groupId = "booking_group_id", containerFactory = "bookingKafkaListenerContainerFactory")
     public void listen(BookingMessageDTO bookingMessageDTO) {
+        logger.info("received admin message: {}",  bookingMessageDTO);
         String bookingId = bookingMessageDTO.getBookingId();
         boolean confirmed = bookingMessageDTO.getAvailable();
         BookingStatus newBookingStatus = getNewBookingStatus(confirmed);
         bookingRepository.findById(bookingId)
                 .flatMap(booking -> {
+                    logger.info("found booking: {}",  booking);
                     //Admin confirmation is received first here
                     if(booking.getBookingStatus() == BookingStatus.RESERVED){
+                        logger.info("Admin response first, booking has status RESERVED: {} ", bookingId  );
                         if(confirmed){
+                            logger.info("Admin confirmed, booking has status ACCEPTED_BY_ADMIN: {} ", bookingId  );
                             booking.setBookingStatus(BookingStatus.ACCEPTED_BY_ADMIN);
-                        } else
+                        } else {
+                            logger.info("Admin rejected, booking has status REJECTED: {} ", bookingId);
                             booking.setBookingStatus(BookingStatus.REJECTED);
+                        }
                     }
                     //Admin confirmation comes after Payment has received ok
                     if (booking.getBookingStatus() == BookingStatus.ACCEPTED_BY_PAYMENT) {
+                        logger.info("Admin response second, booking has status ACCEPTED_BY_PAYMENT: {} ", bookingId);
                         booking.setBookingStatus(newBookingStatus);
                         if(!confirmed) {
+                            logger.info("reverting payment for: {}",  booking);
                             kafkaPaymentTemplate.send("payment-request-revert", new PaymentDetailDTO(bookingId));
                         }
                     }
                     kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
+                    logger.info("admin saved booking: {}",  booking);
                     return bookingRepository.save(booking);
                 })
                 .subscribe();

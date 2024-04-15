@@ -69,7 +69,7 @@ public class BookingService {
         logger.info("Sent message to Kafka topic booking-reserved: {}", bookingMessageDTO);
     }
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "*/100 * * * * *")
     public void checkExpiredBookings() {
         logger.info("Cron job running...");
         bookingRepository.findBookingsByBookingStatusNotInAndExpirationDateBefore(List.of(BookingStatus.SUCCESS, BookingStatus.REJECTED), LocalDateTime.now())

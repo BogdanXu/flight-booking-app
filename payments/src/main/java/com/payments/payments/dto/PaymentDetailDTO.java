@@ -52,4 +52,14 @@ public class PaymentDetailDTO {
     public void setSum(Integer sum) {
         this.sum = sum;
     }
+
+    @Override
+    public String toString() {
+        return "PaymentDetailDTO{" +
+                "bookingId='" + bookingId + '\'' +
+                ", clientIban='" + clientIban + '\'' +
+                ", operatorIban='" + operatorIban + '\'' +
+                ", sum=" + sum +
+                '}';
+    }
 }

@@ -23,8 +23,6 @@ public class PaymentService {
     private AccountService accountService;
 
 
-
-
     public Mono<Boolean> verifyPayment(PaymentDetail paymentDetail) {
         log.info("Verifying payment directly with paymentDetail object: {}", paymentDetail);
 
@@ -74,107 +72,44 @@ public class PaymentService {
     }
 
 
-//    public Mono<Boolean> verifyPayment(String bookingId) {
-//        return paymentDetailRepository.findByBookingId(bookingId)
-//                .flatMap(paymentDetail -> {
-//                    boolean validIban = isIbanValid(paymentDetail.getClientIban()) && isIbanValid(paymentDetail.getOperatorIban());
-//                    log.info("1234validiban: " + validIban);
-//                    if (isIbanValid(paymentDetail.getClientIban()) && isIbanValid(paymentDetail.getOperatorIban())) {
-//                        log.info("1234verifyPaymentWithIbans: !!!!" );
-//                        return verifyPaymentWithIbans(paymentDetail);
-//                    } else {
-//                        log.info("1234else false!!!");
-//                        return Mono.just(false);
-//                    }
-//                })
-//                .switchIfEmpty(Mono.just(false));
-//    }
-//
-//    private boolean isIbanValid(String iban) {
-//        log.info("1234isIbanValid" + iban);
-//        return iban != null && !iban.isEmpty();
-//    }
-//
-//    private Mono<Boolean> verifyPaymentWithIbans(PaymentDetail paymentDetail) {
-//        log.info("1234Verifying payment with IBANs for bookingId: {}", paymentDetail.toString());
-//        return Mono.zip(
-//                        accountService.getAccount(paymentDetail.getClientIban()).doOnNext(account -> log.info("Client account found for IBAN: {}", account.getIban())).defaultIfEmpty(new Account()),
-//                        accountService.getAccount(paymentDetail.getOperatorIban()).doOnNext(account -> log.info("Operator account found for IBAN: {}", account.getIban())).defaultIfEmpty(new Account()),
-//                        (clientAccount, operatorAccount) -> new Account[]{clientAccount, operatorAccount}
-//                )
-//                .flatMap(accounts -> {
-//                    Account clientAccount = accounts[0];
-//                    Account operatorAccount = accounts[1];
-//
-//                    // Verificăm dacă ambele conturi au fost găsite
-//                    if (clientAccount.getId() == null || operatorAccount.getId() == null) {
-//                        log.info("One or both accounts not found. Client IBAN: {}, Operator IBAN: {}", paymentDetail.getClientIban(), paymentDetail.getOperatorIban());
-//                        return Mono.just(false);
-//                    }
-//
-//                    boolean fonduri = clientAccount.getBalance() >= paymentDetail.getAmount();
-//                    log.info("1234 suficiente?: " + fonduri );
-//                    if (fonduri) {
-//                        log.info("1234Sufficient funds for payment. Processing transfer for bookingId: {}", paymentDetail.getBookingId());
-//                        clientAccount.setBalance(clientAccount.getBalance() - paymentDetail.getAmount());
-//                        operatorAccount.setBalance(operatorAccount.getBalance() + paymentDetail.getAmount());
-//
-//                        return accountService.updateAccount(clientAccount)
-//                                .then(accountService.updateAccount(operatorAccount))
-//                                .thenReturn(true);
-//                    } else {
-//                        log.info("1234else pe false");
-//                        return Mono.just(false);
-//                    }
-//                })
-//                .defaultIfEmpty(false);
-//    }
-///////////////////////////////////////////////
+    public Mono<Void> revertPayment(String bookingId) {
+        return paymentDetailRepository.findByBookingId(bookingId)
+                .switchIfEmpty(Mono.error(new IllegalStateException("No payment detail found for bookingId: " + bookingId)))
+                .flatMap(paymentDetail -> {
+                    if (!"ACCEPTED".equals(paymentDetail.getStatus())) {
+                        return Mono.error(new IllegalStateException("Payment status is not ACCEPTED for bookingId: " + bookingId));
+                    }
 
-////    public Mono<Boolean> verifyPayment(String bookingId) {
-//        return paymentDetailRepository.findByBookingId(bookingId)
-//                .log("@@@@@bookingId: " + bookingId)
-//                .flatMap(paymentDetail -> {
-//                    // Verificăm dacă există atât clientIban cât și operatorIban
-//                    if (isIbanValid(paymentDetail.getClientIban()) && isIbanValid(paymentDetail.getOperatorIban())) {
-//                        // Dacă ambele IBAN-uri sunt valide, continuăm cu verificarea plății
-//                        return verifyPaymentWithIbans(paymentDetail);
-//                    } else {
-//                        // Dacă unul dintre IBAN-uri lipsește, returnăm false
-//                        return Mono.just(false);
-//                    }
-//                })
-//                .switchIfEmpty(Mono.just(false));
-//    }
-//
-//    // Metoda pentru verificarea dacă IBAN-ul este valid (nu este null și nu este un șir gol)
-//    private boolean isIbanValid(String iban) {
-//        return iban != null && !iban.isEmpty();
-//    }
-//
-//    // Metoda pentru verificarea plății cu IBAN-uri
-//    private Mono<Boolean> verifyPaymentWithIbans(PaymentDetail paymentDetail) {
-//        // Obținem detaliile contului în mod reactiv pentru clientIban
-//        return accountService.getAccountDetails(paymentDetail.getClientIban())
-//                .map(account -> account.getBalance() >= paymentDetail.getAmount())
-//                // Dacă contul nu există, returnăm false
-//                .defaultIfEmpty(false);
-//    }
+                    return Mono.zip(
+                            accountService.getAccount(paymentDetail.getOperatorIban()),
+                            accountService.getAccount(paymentDetail.getClientIban())
+                    ).flatMap(tuple -> {
+                        Account operatorAccount = tuple.getT1();
+                        Account clientAccount = tuple.getT2();
 
-//    public Mono<Boolean> verifyPayment(String bookingId) {
-//
-//        // Folosim flatMap pentru a procesa PaymentDetail odată ce este returnat
-//
-//        return paymentDetailRepository.findByBookingId(bookingId)
-//                .log("@@@@@bookingId: " +bookingId)
-//                .flatMap(paymentDetail ->
-//                        // Obținem detaliile contului în mod reactiv
-//                        accountService.getAccountDetails(paymentDetail.getClientIban())
-//                                .map(account -> account.getBalance() >= paymentDetail.getAmount())
-//                                // Dacă contul nu există, returnăm false
-//                                .defaultIfEmpty(false)
-//                )
-//                // Dacă nu există PaymentDetail pentru ID-ul dat, returnăm Mono.just(false)
-//                .switchIfEmpty(Mono.just(false));
-//    }
+                        if (operatorAccount == null || clientAccount == null) {
+                            return Mono.error(new IllegalStateException("One or both accounts could not be found"));
+                        }
+
+                        if (operatorAccount.getBalance() < paymentDetail.getAmount()) {
+                            return Mono.error(new IllegalStateException("Operator account has insufficient funds for bookingId: " + bookingId));
+                        }
+
+                        operatorAccount.setBalance(operatorAccount.getBalance() - paymentDetail.getAmount());
+                        clientAccount.setBalance(clientAccount.getBalance() + paymentDetail.getAmount());
+
+                        return Mono.when(
+                                accountService.updateAccount(operatorAccount),
+                                accountService.updateAccount(clientAccount)
+                        );
+                    }).then(Mono.fromRunnable(() -> {
+                        paymentDetail.setStatus("REVERTED");
+                        paymentDetailRepository.save(paymentDetail).subscribe();
+                        log.info("Payment status set to REVERTED for bookingId: {}", bookingId);
+                    }));
+                })
+                .doOnSuccess(aVoid -> log.info("Revert payment process completed successfully for bookingId: {}", bookingId))
+                .doOnError(e -> log.error("An error occurred during the revert payment process for bookingId: {}", bookingId, e)).then();
+    }
+
 }

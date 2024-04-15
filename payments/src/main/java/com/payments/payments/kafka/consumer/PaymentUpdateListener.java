@@ -35,8 +35,6 @@ public class PaymentUpdateListener {
 
         PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
 
-        log.info("paymentDetail obj: " + paymentDetail.toString());
-
         paymentService.verifyPayment(paymentDetail)
                 .doOnSuccess(confirmPayment -> {
                     if (Boolean.TRUE.equals(confirmPayment)) {
@@ -55,51 +53,20 @@ public class PaymentUpdateListener {
                 })
                 .subscribe();
 
+    }
 
-//
-//
-//        PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
-////        paymentDetailRepository.save(paymentDetail).subscribe();
-//
-//        log.info("paymentDetail obj: " + paymentDetail.toString());
-//
-////        boolean confirmPayment = paymentService.verifyPayment(paymentDetail.getBookingId()).block();
-//
-////        log.info("confirmPayment boolean : " + confirmPayment);
-//
-//        paymentService.verifyPayment(paymentDetail.getBookingId())
-//                .doOnSuccess(confirmPayment -> {
-//                    if (Boolean.TRUE.equals(confirmPayment)) {
-//                        paymentDetail.setStatus("ACCEPTED");
-//                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
-//                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
-//                        // The save operation should also be reactive
-//                        paymentDetailRepository.save(paymentDetail).subscribe();
-//                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-//                    } else {
-//                        paymentDetail.setStatus("REJECTED");
-//                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
-//                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
-//                        paymentDetailRepository.save(paymentDetail).subscribe();
-//                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-//                    }
-//                })
-//                .subscribe();
+    @KafkaListener(topics = "payment-request-revert")
+    public void listenForRevertPayment(PaymentDetailDTO paymentDetailDTO) {
+        log.info("Starting revert process for: {}",paymentDetailDTO);
 
-//////////////////
-//        if (confirmPayment) {
-//            paymentDetail.setStatus("ACCEPTED");
-//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
-//            paymentDetailRepository.save(paymentDetail).subscribe();
-//
-//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-//        } else {
-//            paymentDetail.setStatus("REJECTED");
-//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
-//            paymentDetailRepository.save(paymentDetail).subscribe();
-//
-//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-//        }
+//        String bookingId = paymentDetailDTO.getBookingId();
+//        paymentService.revertPayment(bookingId);
+        String bookingId = paymentDetailDTO.getBookingId();
+        paymentService.revertPayment(bookingId)
+                .subscribe(
+                        result -> log.info("Successfully reverted payment for bookingId: {}", bookingId),
+                        error -> log.error("Failed to revert payment for bookingId: {}", bookingId, error)
+                );
 
     }
 
