@@ -19,6 +19,6 @@ public class NotificationListener {
 
     @KafkaListener(topics = "notification")
     public void listenForCanceledBookings(NotificationDTO notificationDTO) {
-        notificationRepository.save(notificationMapper.toEntity(notificationDTO)).subscribe();
+        notificationRepository.save(notificationMapper.toEntity(notificationDTO));
     }
 }

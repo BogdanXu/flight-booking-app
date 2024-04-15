@@ -10,12 +10,12 @@ public class FlightDTO {
     private Integer seatsAvailable;
     private String flightDuration;
     private Long operatorId;
-    private String departureAirport;
-    private String arrivalAirport;
+    private String departureAirportCode;
+    private String arrivalAirportCode;
 
     public FlightDTO() {}
 
-    public FlightDTO(Long id, String flightCode, LocalDateTime date, String ticketPrice, Integer seatsAvailable, String flightDuration, Long operatorId, String departureAirport, String arrivalAirport) {
+    public FlightDTO(Long id, String flightCode, LocalDateTime date, String ticketPrice, Integer seatsAvailable, String flightDuration, Long operatorId, String departureAirportCode, String arrivalAirportCode) {
         this.id = id;
         this.flightCode = flightCode;
         this.date = date;
@@ -23,8 +23,8 @@ public class FlightDTO {
         this.seatsAvailable = seatsAvailable;
         this.flightDuration = flightDuration;
         this.operatorId = operatorId;
-        this.departureAirport = departureAirport;
-        this.arrivalAirport = arrivalAirport;
+        this.departureAirportCode = departureAirportCode;
+        this.arrivalAirportCode = arrivalAirportCode;
     }
 
     public Long getId() {
@@ -83,20 +83,20 @@ public class FlightDTO {
         this.operatorId = operatorId;
     }
 
-    public String getDepartureAirport() {
-        return departureAirport;
+    public String getDepartureAirportCode() {
+        return departureAirportCode;
     }
 
-    public void setDepartureAirport(String departureAirport) {
-        this.departureAirport = departureAirport;
+    public void setDepartureAirportCode(String departureAirportCode) {
+        this.departureAirportCode = departureAirportCode;
     }
 
-    public String getArrivalAirport() {
-        return arrivalAirport;
+    public String getArrivalAirportCode() {
+        return arrivalAirportCode;
     }
 
-    public void setArrivalAirport(String arrivalAirport) {
-        this.arrivalAirport = arrivalAirport;
+    public void setArrivalAirportCode(String arrivalAirportCode) {
+        this.arrivalAirportCode = arrivalAirportCode;
     }
 }
 
