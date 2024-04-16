@@ -193,26 +193,14 @@ services:
       context: ../notification
       dockerfile: Dockerfile
     depends_on:
-      - notifications-mongo_db
+      - es01
     ports:
       - 8090:8084
     environment:
-      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@notifications-mongo_db:27017/notification_db?authSource=admin"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:9092"
+      - SPRING_ELASTICSEARCH_URIS= es01:9200
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS= broker:9092
     volumes:
       - payments-db:/data/db
-    networks:
-      - kafka-net
-  notifications-mongo_db:
-    image: mongo:latest
-    restart: unless-stopped
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=123456
-    ports:
-      - 7020:27017
-    volumes:
-      - notification-db:/data/db
     networks:
       - kafka-net
   es01:
@@ -225,6 +213,8 @@ services:
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - network.host= 0.0.0.0
     ulimits:
       memlock:
         soft: -1
@@ -245,6 +235,7 @@ services:
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
     ulimits:
       memlock:
         soft: -1
@@ -263,6 +254,7 @@ services:
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
     ulimits:
       memlock:
         soft: -1
@@ -277,7 +269,6 @@ volumes:
   admin-postgres-data:
   payments-db:
   operator-vol-postgres:
-  notification-db:
   data01:
   data02:
   data03:
