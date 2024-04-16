@@ -24,4 +24,13 @@ public class TopicConfig  {
                 .build();
     }
 
+    @Bean
+    NewTopic paymentRequestRevert(){
+        return TopicBuilder
+                .name("payment-request-revert")
+                .partitions(10)
+                .replicas(1)
+                .build();
+    }
+
 }

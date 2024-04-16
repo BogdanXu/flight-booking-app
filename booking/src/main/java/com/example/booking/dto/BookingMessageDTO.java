@@ -26,9 +26,10 @@ public class BookingMessageDTO {
     @Override
     public String toString() {
         return "BookingMessageDTO{" +
-                "bookingId=" + bookingId +
+                "bookingId='" + bookingId + '\'' +
                 ", flightId=" + flightId +
                 ", numberOfSeats=" + numberOfSeats +
+                ", available=" + available +
                 '}';
     }
 

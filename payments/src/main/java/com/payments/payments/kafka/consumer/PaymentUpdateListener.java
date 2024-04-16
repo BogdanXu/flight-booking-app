@@ -8,13 +8,9 @@ import com.payments.payments.repository.PaymentDetailRepository;
 import com.payments.payments.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 
 @Component
@@ -37,35 +33,40 @@ public class PaymentUpdateListener {
     @KafkaListener(topics = "payment-request")
     public void listen(PaymentDetailDTO paymentDetailDTO) {
 
-
         PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
-        paymentDetailRepository.save(paymentDetail).subscribe();
 
-        Boolean confirmPayment = paymentService.verifyPayment(paymentDetail.getBookingId()).block();
+        paymentService.verifyPayment(paymentDetail)
+                .doOnSuccess(confirmPayment -> {
+                    if (Boolean.TRUE.equals(confirmPayment)) {
+                        paymentDetail.setStatus("ACCEPTED");
+                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
+                        paymentDetailRepository.save(paymentDetail).subscribe();
+                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+                    } else {
+                        paymentDetail.setStatus("REJECTED");
+                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
+                        paymentDetailRepository.save(paymentDetail).subscribe();
+                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+                    }
+                })
+                .subscribe();
 
-        if (Boolean.TRUE.equals(confirmPayment)) {
-            paymentDetail.setStatus("ACCEPTED");
-            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
-            paymentDetailRepository.save(paymentDetail).subscribe();
+    }
 
-            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-        } else {
-            paymentDetail.setStatus("REJECTED");
-            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
-            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-        }
+    @KafkaListener(topics = "payment-request-revert")
+    public void listenForRevertPayment(PaymentDetailDTO paymentDetailDTO) {
+        log.info("Starting revert process for: {}",paymentDetailDTO);
 
-//        if(paymentDetail.getAmount() > 90){
-//            paymentDetail.setStatus("REJECTED");
-//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
-//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO );
-//        }else {
-//            paymentDetail.setStatus("Accepted");
-//            PaymentDetailConfirmationDTO paymentDetailConfirmationDTO = new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
-//            kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-//        }
-//        paymentDetailRepository.save(paymentDetail).subscribe();
-//    }
+//        String bookingId = paymentDetailDTO.getBookingId();
+//        paymentService.revertPayment(bookingId);
+        String bookingId = paymentDetailDTO.getBookingId();
+        paymentService.revertPayment(bookingId)
+                .subscribe(
+                        result -> log.info("Successfully reverted payment for bookingId: {}", bookingId),
+                        error -> log.error("Failed to revert payment for bookingId: {}", bookingId, error)
+                );
 
     }
 
