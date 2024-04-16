@@ -1,7 +1,6 @@
 package com.payments.payments.service;
 
 
-import com.payments.payments.kafka.consumer.PaymentUpdateListener;
 import com.payments.payments.model.Account;
 import com.payments.payments.model.PaymentDetail;
 import com.payments.payments.repository.PaymentDetailRepository;
@@ -10,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import static com.payments.payments.constants.Constants.ACCEPTED;
 
 @Service
 public class PaymentService {
@@ -31,10 +32,10 @@ public class PaymentService {
             return Mono.just(false);
         }
 
-        return verifyPaymentWithIbans(paymentDetail);
+        return verifyPaymentWithIban(paymentDetail);
     }
 
-    private Mono<Boolean> verifyPaymentWithIbans(PaymentDetail paymentDetail) {
+    private Mono<Boolean> verifyPaymentWithIban(PaymentDetail paymentDetail) {
         log.info("Verifying payment with IBANs for bookingId: {}", paymentDetail.getBookingId());
 
         return Mono.zip(
@@ -76,7 +77,7 @@ public class PaymentService {
         return paymentDetailRepository.findByBookingId(bookingId)
                 .switchIfEmpty(Mono.error(new IllegalStateException("No payment detail found for bookingId: " + bookingId)))
                 .flatMap(paymentDetail -> {
-                    if (!"ACCEPTED".equals(paymentDetail.getStatus())) {
+                    if (!ACCEPTED.equals(paymentDetail.getStatus())) {
                         return Mono.error(new IllegalStateException("Payment status is not ACCEPTED for bookingId: " + bookingId));
                     }
 
