@@ -79,16 +79,28 @@ public class BookingService {
                 .doOnNext(booking -> {
                     logger.info("Booking reservation expired: {}", booking);
                     logger.info("Setting booking status to rejected for booking: {}", booking.getId());
+
+                    if(booking.getBookingStatus() == BookingStatus.ACCEPTED_BY_ADMIN){
+                        revertAdminReservation(booking);
+                    }
+                    if(booking.getBookingStatus() == BookingStatus.ACCEPTED_BY_PAYMENT){
+                        revertPaymentProcessing(booking);
+                    }
+
                     booking.setBookingStatus(BookingStatus.REJECTED);
-                    sendRejectedBookingToAdmin(booking);
+
                     kafkaNotificationTemplate.send("notification", new NotificationDTO(booking.getId(),"Booking updated to status "+booking.getBookingStatus()));
                     bookingRepository.save(booking).subscribe();
                 })
                 .subscribe();
     }
 
-    private void sendRejectedBookingToAdmin(Booking booking){
+    private void revertAdminReservation(Booking booking){
         kafkaAdminTemplate.send("booking-rejected", new BookingMessageDTO(booking.getId(), booking.getFlight().getId(), booking.getSeats().size()));
+    }
+
+    private void revertPaymentProcessing(Booking booking){
+        kafkaPaymentTemplate.send("payment-request-revert", new PaymentDetailDTO(booking.getId()));
     }
 
 }
