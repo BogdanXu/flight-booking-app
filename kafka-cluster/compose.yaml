@@ -203,6 +203,18 @@ services:
       - payments-db:/data/db
     networks:
       - kafka-net
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.17.20
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es01:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - es01
+    networks:
+      - kafka-net
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.20
     container_name: es01
