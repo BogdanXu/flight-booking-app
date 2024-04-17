@@ -215,10 +215,10 @@ public class BookingListenerIntegrationTests {
 
 
         paymentConfirmationKafkaTemplate.send("payment-request-confirmation", paymentDTO);
-        Thread.sleep(4000);
+        Thread.sleep(500);
         adminKafkaTemplate.send("booking-admin-confirmation", adminDTO);
 
-        Thread.sleep(4000);
+        Thread.sleep(500);
         Mono<Booking> actual = bookingRepository.findById("123");
 
         StepVerifier.create(actual)
