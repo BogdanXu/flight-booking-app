@@ -21,7 +21,6 @@ jobs:
     - name: Set up JDK and Build
       working-directory: ./booking
       run: |
-        cd booking
         mvn clean install
 
     - name: Build and test other microservices
