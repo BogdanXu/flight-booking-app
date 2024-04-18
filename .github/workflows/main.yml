@@ -18,17 +18,11 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v2
       
-    - name: Set up JDK
-      uses: actions/setup-java@v2
-      with:
-        java-version: '17'
-        distribution: 'adopt'
-      
-    - name: Build and test booking microservice
+    - name: Set up JDK and Build
+      working-directory: booking
       run: |
         cd booking
         mvn clean install
-      working-directory: booking
 
     - name: Build and test other microservices
       run: |
