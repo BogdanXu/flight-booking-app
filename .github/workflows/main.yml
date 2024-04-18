@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  VERSION: latest
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v2
+      
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+      
+    - name: Build and test booking microservice
+      run: |
+        cd booking
+        mvn clean install
+      working-directory: booking
+
+    - name: Build and test other microservices
+      run: |
+        for service in $(ls -d *-be); do
+          cd $service
+          mvn clean install
+          cd ..
+        done
