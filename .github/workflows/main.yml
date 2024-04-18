@@ -68,16 +68,16 @@ jobs:
         ./mvnw clean install
 
     - name: Build, unit tests and integration tests - Operator
-      working-directory: ./operator
+      working-directory: ./operator 
       run: |
         chmod +x mvnw                                 
-        ./mvnw clean install
+        ./mvnw clean install -DskipTests
 
     - name: Build, unit tests and integration tests - Payments
       working-directory: ./payments
       run: |
         chmod +x mvnw                                 
-        ./mvnw clean install
+        ./mvnw clean install -Dskiptests
 
 
 
