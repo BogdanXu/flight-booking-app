@@ -19,7 +19,7 @@ jobs:
       uses: actions/checkout@v2
       
     - name: Set up JDK and Build
-      working-directory: booking
+      working-directory: ./booking
       run: |
         cd booking
         mvn clean install
