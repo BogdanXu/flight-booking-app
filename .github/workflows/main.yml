@@ -77,7 +77,7 @@ jobs:
       working-directory: ./payments
       run: |
         chmod +x mvnw                                 
-        ./mvnw clean install -Dskiptests
+        ./mvnw clean install -DskipTests
 
 
 
