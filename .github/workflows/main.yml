@@ -43,16 +43,41 @@ jobs:
       with:
         sarif_file: ${{ steps.scan.outputs.sarif }}
 
-    - name: Build, unit tests and integration tests
+    - name: Build, unit tests and integration tests - Admin
+      working-directory: ./admin
+      run: |
+        chmod +x mvnw                                 
+        ./mvnw clean install
+
+    - name: Build, unit tests and integration tests - Booking
       working-directory: ./booking
       run: |
         chmod +x mvnw                                 
         ./mvnw clean install
 
-    # - name: Build and test other microservices
-    #   run: |
-    #     for service in $(ls -d *-be); do
-    #       cd $service
-    #       mvn clean install
-    #       cd ..
-    #     done
+    - name: Build, unit tests and integration tests - Flight-search
+      working-directory: ./flight-search
+      run: |
+        chmod +x mvnw                                 
+        ./mvnw clean install
+
+    - name: Build, unit tests and integration tests - Notification
+      working-directory: ./notification
+      run: |
+        chmod +x mvnw                                 
+        ./mvnw clean install
+
+    - name: Build, unit tests and integration tests - Operator
+      working-directory: ./operator
+      run: |
+        chmod +x mvnw                                 
+        ./mvnw clean install
+
+    - name: Build, unit tests and integration tests - Payments
+      working-directory: ./payments
+      run: |
+        chmod +x mvnw                                 
+        ./mvnw clean install
+
+
+
