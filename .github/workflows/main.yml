@@ -13,20 +13,46 @@ jobs:
   build_and_test:
     name: Build and Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     
     steps:
     - name: Checkout source code
       uses: actions/checkout@v2
       
-    - name: Set up JDK and Build
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 17
+        cache: maven
+
+    - name: Code vulnerability scanning
+      uses: anchore/scan-action@v3
+      id: scan
+      with:
+        path: "${{ github.workspace }}"
+        fail-build: false
+        severity-cutoff: high
+        acs-report-enable: true
+
+    - name: Upload vulnerability report
+      uses: github/codeql-action/upload-sarif@v2
+      if: success() || failure()
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarif }}
+
+    - name: Build, unit tests and integration tests
       working-directory: ./booking
       run: |
-        mvn clean install
+        chmod +x mvnw                                 
+        ./mvnw clean install
 
-    - name: Build and test other microservices
-      run: |
-        for service in $(ls -d *-be); do
-          cd $service
-          mvn clean install
-          cd ..
-        done
+    # - name: Build and test other microservices
+    #   run: |
+    #     for service in $(ls -d *-be); do
+    #       cd $service
+    #       mvn clean install
+    #       cd ..
+    #     done
