@@ -3,6 +3,8 @@ package com.example.notification.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.util.Date;
+
 @Document(indexName = "notifications")
 public class Notification {
     @Id
@@ -10,6 +12,7 @@ public class Notification {
 
     private String bookingId;
     private String message;
+    private Date createdAt;
 
     public Notification() {
     }
@@ -42,5 +45,13 @@ public class Notification {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -6,6 +6,8 @@ import com.example.notification.repository.NotificationRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 public class NotificationListener {
     private final NotificationRepository notificationRepository;
@@ -19,6 +21,7 @@ public class NotificationListener {
 
     @KafkaListener(topics = "notification")
     public void listenForCanceledBookings(NotificationDTO notificationDTO) {
+        notificationDTO.setCreatedAt(new Date());
         notificationRepository.save(notificationMapper.toEntity(notificationDTO));
     }
 }
