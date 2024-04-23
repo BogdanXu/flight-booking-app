@@ -1,10 +1,14 @@
 package com.example.notification.dto;
 
+import java.util.Date;
+
 public class NotificationDTO {
     private String id;
 
     private String bookingId;
     private String message;
+
+    private Date createdAt;
 
     public NotificationDTO() {
     }
@@ -37,5 +41,13 @@ public class NotificationDTO {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }
