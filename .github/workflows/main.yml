@@ -80,7 +80,7 @@ jobs:
         ./mvnw clean install -DskipTests
 
   package:
-    name: Package and Publish
+    name: Package and Publish 
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: [ build_and_test ]
     runs-on: ubuntu-22.04
@@ -97,30 +97,60 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - name: Build container image
+      - name: Build container image - Booking
         working-directory: ./booking
         run: |
           chmod +x mvnw 
           ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/booking:latest
-      - name: OCI image vulnerability scanning
+      
+      - name: Build container image - Admin
+        working-directory: ./admin
+        run: |
+          chmod +x mvnw 
+          ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/admin:latest
+      
+      - name: OCI image vulnerability scanning - Booking
         uses: anchore/scan-action@v3
-        id: scan
+        id: scan_booking
         with:
           image: ghcr.io/bogdanxu/booking:latest
           fail-build: false
           severity-cutoff: high
           acs-report-enable: true
-      - name: Upload vulnerability report
+      
+      - name: Upload vulnerability report - Booking
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: ${{ steps.scan_booking.outputs.sarif }}
+      
+      - name: OCI image vulnerability scanning - Admin
+        uses: anchore/scan-action@v3
+        id: scan_admin
+        with:
+          image: ghcr.io/bogdanxu/admin:latest
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+      
+      - name: Upload vulnerability report - Admin
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_admin.outputs.sarif }}
+      
       - name: Log into container registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish container image
+      
+      - name: Publish container image - Booking
         run: docker push ghcr.io/bogdanxu/booking:latest
+      
+      - name: Publish container image - Admin
+        run: docker push ghcr.io/bogdanxu/admin:latest
+
+
 
