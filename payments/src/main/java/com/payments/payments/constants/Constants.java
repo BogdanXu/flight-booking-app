@@ -5,4 +5,5 @@ public class Constants {
     }
 
     public static final String ACCEPTED = "ACCEPTED";
+    public static final String REJECTED = "REJECTED";
 }

@@ -8,9 +8,13 @@ import com.payments.payments.repository.PaymentDetailRepository;
 import com.payments.payments.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+
+import static com.payments.payments.constants.Constants.ACCEPTED;
+import static com.payments.payments.constants.Constants.REJECTED;
 
 
 @Component
@@ -23,6 +27,8 @@ public class PaymentUpdateListener {
 
     private final PaymentService paymentService;
 
+
+
     public PaymentUpdateListener(PaymentDetailRepository paymentDetailRepository, KafkaTemplate<String,
             PaymentDetailConfirmationDTO> kafkaTemplate, PaymentService paymentService) {
         this.paymentDetailRepository = paymentDetailRepository;
@@ -34,17 +40,19 @@ public class PaymentUpdateListener {
     public void listen(PaymentDetailDTO paymentDetailDTO) {
 
         PaymentDetail paymentDetail = PaymentDetailMapper.fromDTO(paymentDetailDTO);
+        paymentDetail.setStatus("INITIATED");
+        paymentDetailRepository.save(paymentDetail).subscribe();
 
         paymentService.verifyPayment(paymentDetail)
                 .doOnSuccess(confirmPayment -> {
                     if (Boolean.TRUE.equals(confirmPayment)) {
-                        paymentDetail.setStatus("ACCEPTED");
+                        paymentDetail.setStatus(ACCEPTED);
                         PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
                                 new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
                         paymentDetailRepository.save(paymentDetail).subscribe();
                         kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
                     } else {
-                        paymentDetail.setStatus("REJECTED");
+                        paymentDetail.setStatus(REJECTED);
                         PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
                                 new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
                         paymentDetailRepository.save(paymentDetail).subscribe();
@@ -59,8 +67,6 @@ public class PaymentUpdateListener {
     public void listenForRevertPayment(PaymentDetailDTO paymentDetailDTO) {
         log.info("Starting revert process for: {}",paymentDetailDTO);
 
-//        String bookingId = paymentDetailDTO.getBookingId();
-//        paymentService.revertPayment(bookingId);
         String bookingId = paymentDetailDTO.getBookingId();
         paymentService.revertPayment(bookingId)
                 .subscribe(
