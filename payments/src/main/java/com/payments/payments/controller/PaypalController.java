@@ -36,21 +36,21 @@ public class PaypalController {
     private final PaymentDetailService paymentDetailService;
     private final PaymentDetailRepository paymentDetailRepository;
 
-    private final PaymentDetail paymentDetail;
+//    private final PaymentDetail paymentDetail;
 
-    public PaypalController(PaypalService paypalService, AccountService accountService, PaymentDetailService paymentDetailService, PaymentDetailRepository paymentDetailRepository, PaymentDetail paymentDetail) {
-        this.paypalService = paypalService;
-        this.accountService = accountService;
-        this.paymentDetailService = paymentDetailService;
-        this.paymentDetailRepository = paymentDetailRepository;
-        this.paymentDetail = paymentDetail;
-    }
-
-//    public PaypalController(PaypalService paypalService, AccountService accountService, PaymentDetailService paymentDetailService, PaymentDetailRepository paymentDetailRepository) {
+//    public PaypalController(PaypalService paypalService, AccountService accountService, PaymentDetailService paymentDetailService, PaymentDetailRepository paymentDetailRepository, PaymentDetail paymentDetail) {
 //        this.paypalService = paypalService;
 //        this.accountService = accountService;
 //        this.paymentDetailService = paymentDetailService;
 //        this.paymentDetailRepository = paymentDetailRepository;
+//        this.paymentDetail = paymentDetail;
+//    }
+
+    public PaypalController(PaypalService paypalService, AccountService accountService, PaymentDetailService paymentDetailService, PaymentDetailRepository paymentDetailRepository) {
+        this.paypalService = paypalService;
+        this.accountService = accountService;
+        this.paymentDetailService = paymentDetailService;
+        this.paymentDetailRepository = paymentDetailRepository;
     }
 
 
