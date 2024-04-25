@@ -246,7 +246,7 @@ public class FlightService {
 //    }
 
     public Flux<FlightDTO> searchFlights(String startDestination, String endDestination, LocalDate startDate, LocalDate endDate) {
-        return flightRepository.findByCriteria(startDestination, endDestination, startDate, endDate, IATACode)
+        return flightRepository.findByCriteria(startDestination, endDestination, startDate, endDate.plusDays(1), IATACode)
                 .map(this::convertToDTO);
     }
 }

@@ -142,50 +142,6 @@ services:
       - operator-db:/data/db
     networks:
       - kafka-net
-#  operator-postgres:
-#    container_name: operator-postgres
-#    image: postgres:latest
-#    environment:
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=postgres
-#    volumes:
-#      - operator-vol-postgres:/var/lib/postgresql/data
-#    ports:
-#      - "5434:5432"
-#    networks:
-#      - kafka-net
-  operator-be-lufthansa:
-    container_name: operator-be-lufthansa
-    build:
-      context: ../operator
-      dockerfile: Dockerfile
-    depends_on:
-      - operator-mongo_db
-    ports:
-      - "8282:8282"
-    environment:
-      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
-      airline.iata.code: LH
-    volumes:
-      - operator-db:/data/db
-    networks:
-      - kafka-net
-  operator-be-tarom:
-    container_name: operator-be-tarom
-    build:
-      context: ../operator
-      dockerfile: Dockerfile
-    depends_on:
-      - operator-mongo_db
-    ports:
-      - "8383:8282"
-    environment:
-      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
-      airline.iata.code: RO
-    volumes:
-      - operator-db:/data/db
-    networks:
-      - kafka-net
   flight-search-be:
     container_name: flight-search-be
     build:
@@ -283,6 +239,134 @@ services:
       - data03:/usr/share/elasticsearch/data
     networks:
     - kafka-net
+  operator-be-lufthansa:
+    container_name: operator-be-lufthansa
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8282:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: LH
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
+  operator-be-tarom:
+    container_name: operator-be-tarom
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8383:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: RO
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
+  operator-be-wizz-air:
+    container_name: operator-be-wizz-air
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8384:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: WZ
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
+  operator-be-ryan-air:
+    container_name: operator-be-ryan-air
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8385:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: RY
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
+  operator-be-delta:
+    container_name: operator-be-delta
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8386:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: DT
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
+  operator-be-klm:
+    container_name: operator-be-klm
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8387:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: KM
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
+  operator-be-al-italia:
+    container_name: operator-be-al-italia
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8388:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: IT
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
+  operator-be-easy-jet:
+    container_name: operator-be-easy-jet
+    build:
+      context: ../operator
+      dockerfile: Dockerfile
+    depends_on:
+      - operator-mongo_db
+    ports:
+      - "8389:8282"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
+      airline.iata.code: EJ
+    volumes:
+      - operator-db:/data/db
+    networks:
+      - kafka-net
 volumes:
   booking-db:
   mongo-db:

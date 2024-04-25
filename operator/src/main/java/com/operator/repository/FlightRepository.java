@@ -11,6 +11,6 @@ import java.time.LocalDate;
 
 @Repository
 public interface FlightRepository extends ReactiveMongoRepository<Flight, Long> {
-    @Query("{'departureAirport.codAirport': ?0, 'arrivalAirport.codAirport': ?1, 'flightDate': { $gte: ?2, $lt: ?3 }, 'flightCode': { $regex: ?4 } }")
+    @Query("{'departureAirport.codAirport': ?0, 'arrivalAirport.codAirport': ?1, 'flightDate': { $gte: ?2, $lte: ?3 }, 'flightCode': { $regex: ?4 } }")
     Flux<Flight> findByCriteria(String startDestination, String endDestination, LocalDate startDate, LocalDate endDate, String IATACode);
 }
