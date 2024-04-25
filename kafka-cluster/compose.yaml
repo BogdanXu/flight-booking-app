@@ -130,34 +130,44 @@ services:
       - payments-db:/data/db
     networks:
       - kafka-net
-  operator-postgres:
-    container_name: operator-postgres
-    image: postgres:latest
+  operator-mongo_db:
+    image: mongo:latest
+    restart: unless-stopped
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - operator-vol-postgres:/var/lib/postgresql/data
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
     ports:
-      - "5434:5432"
+      - 7019:27017
+    volumes:
+      - operator-db:/data/db
     networks:
       - kafka-net
+#  operator-postgres:
+#    container_name: operator-postgres
+#    image: postgres:latest
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#    volumes:
+#      - operator-vol-postgres:/var/lib/postgresql/data
+#    ports:
+#      - "5434:5432"
+#    networks:
+#      - kafka-net
   operator-be-lufthansa:
     container_name: operator-be-lufthansa
     build:
       context: ../operator
       dockerfile: Dockerfile
     depends_on:
-      - operator-postgres
+      - operator-mongo_db
     ports:
       - "8282:8282"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://operator-postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
       airline.iata.code: LH
-    links:
-      - operator-postgres
+    volumes:
+      - operator-db:/data/db
     networks:
       - kafka-net
   operator-be-tarom:
@@ -166,16 +176,14 @@ services:
       context: ../operator
       dockerfile: Dockerfile
     depends_on:
-      - operator-postgres
+      - operator-mongo_db
     ports:
       - "8383:8282"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://operator-postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATA_MONGODB_URI: "mongodb://root:123456@operator-mongo_db:27017/operator_db?authSource=admin"
       airline.iata.code: RO
-    links:
-      - operator-postgres
+    volumes:
+      - operator-db:/data/db
     networks:
       - kafka-net
   flight-search-be:
@@ -280,6 +288,7 @@ volumes:
   mongo-db:
   admin-postgres-data:
   payments-db:
+  operator-db:
   operator-vol-postgres:
   data01:
   data02:

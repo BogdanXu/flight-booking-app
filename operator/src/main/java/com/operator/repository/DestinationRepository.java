@@ -1,13 +1,16 @@
 package com.operator.repository;
 
 import com.operator.model.Destination;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+
 @Repository
-public interface DestinationRepository extends JpaRepository<Destination, Long> {
+public interface DestinationRepository extends MongoRepository<Destination, Long> {
     boolean existsByCodAirport(String codAirport);
     Optional<Destination> findByCodAirport(String departureAirportCode);
 }

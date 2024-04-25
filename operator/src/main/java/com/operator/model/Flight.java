@@ -1,31 +1,22 @@
 package com.operator.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Document(collection = "flight")
 public class Flight {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Column(name = "flight_code")
     private String flightCode;
-    @Column(name = "flight_date")
     private LocalDateTime flightDate;
-    @Column(name = "ticket_price")
     private String ticketPrice;
-    @Column(name = "seats_available")
     private Integer seatsAvailable;
-    @Column(name = "flight_duration")
     private String flightDuration;
 
-    @ManyToOne
-    @JoinColumn(name = "departure_airpor_id")
-    Destination departureAirport;
-    @ManyToOne
-    @JoinColumn(name = "arrival_airport_id")
-    Destination arrivalAirport;
+    private Destination departureAirport;
+    private Destination arrivalAirport;
 
     public Flight() {
     }
@@ -61,8 +52,8 @@ public class Flight {
         return flightDate;
     }
 
-    public void setFlightDate(LocalDateTime date) {
-        this.flightDate = date;
+    public void setFlightDate(LocalDateTime flightDate) {
+        this.flightDate = flightDate;
     }
 
     public String getTicketPrice() {
@@ -110,7 +101,7 @@ public class Flight {
         return "Flight{" +
                 "id=" + id +
                 ", flightCode='" + flightCode + '\'' +
-                ", date=" + flightDate +
+                ", flightDate=" + flightDate +
                 ", ticketPrice='" + ticketPrice + '\'' +
                 ", seatsAvailable=" + seatsAvailable +
                 ", flightDuration='" + flightDuration + '\'' +
@@ -119,4 +110,3 @@ public class Flight {
                 '}';
     }
 }
-

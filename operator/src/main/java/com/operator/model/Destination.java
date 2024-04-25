@@ -1,17 +1,14 @@
 package com.operator.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "destination")
 public class Destination {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Column(name = "cod_airport")
     private String codAirport;
-    @Column(name = "country")
     private String country;
-    @Column(name = "city")
     private String city;
 
     public Destination() {
@@ -66,4 +63,3 @@ public class Destination {
                 '}';
     }
 }
-
