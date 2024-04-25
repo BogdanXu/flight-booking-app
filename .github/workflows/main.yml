@@ -108,6 +108,30 @@ jobs:
         run: |
           chmod +x mvnw 
           ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/admin:latest
+
+      - name: Build container image - Flight-search
+        working-directory: ./flight-search
+        run: |
+          chmod +x mvnw 
+          ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/flight-search:latest
+
+      - name: Build container image - Notifications
+        working-directory: ./notification
+        run: |
+          chmod +x mvnw 
+          ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/notification:latest
+
+      - name: Build container image - Operator
+        working-directory: ./operator
+        run: |
+          chmod +x mvnw 
+          ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/operator:latest
+
+      - name: Build container image - Payments
+        working-directory: ./payments
+        run: |
+          chmod +x mvnw 
+          ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/payments:latest
       
       - name: OCI image vulnerability scanning - Booking
         uses: anchore/scan-action@v3
@@ -126,6 +150,43 @@ jobs:
           fail-build: false
           severity-cutoff: high
           acs-report-enable: true
+
+      - name: OCI image vulnerability scanning - Flight-search
+        uses: anchore/scan-action@v3
+        id: scan_flight_search
+        with:
+          image: ghcr.io/bogdanxu/flight-search:latest
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+
+      - name: OCI image vulnerability scanning - Notifications
+        uses: anchore/scan-action@v3
+        id: scan_notifications
+        with:
+          image: ghcr.io/bogdanxu/notification:latest
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+
+      - name: OCI image vulnerability scanning - Operator
+        uses: anchore/scan-action@v3
+        id: scan_operator
+        with:
+          image: ghcr.io/bogdanxu/operator:latest
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+
+      - name: OCI image vulnerability scanning - Payments
+        uses: anchore/scan-action@v3
+        id: scan_payments
+        with:
+          image: ghcr.io/bogdanxu/payments:latest
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+          
       
       - name: Upload vulnerability report - Booking
         uses: github/codeql-action/upload-sarif@v2
@@ -140,7 +201,35 @@ jobs:
         with:
           sarif_file: ${{ steps.scan_admin.outputs.sarif }}
           category: "admin-vulnerabilities"
-      
+
+      - name: Upload vulnerability report - Flight-search
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_flight_search.outputs.sarif }}
+          category: "flight-search-vulnerabilities"
+
+      - name: Upload vulnerability report - Notifications
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_notification.outputs.sarif }}
+          category: "notification-vulnerabilities"
+
+      - name: Upload vulnerability report - Operator
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_operator.outputs.sarif }}
+          category: "operator-vulnerabilities"
+
+      - name: Upload vulnerability report - Payments
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_payments.outputs.sarif }}
+          category: "payments-vulnerabilities"
+          
       - name: Log into container registry
         uses: docker/login-action@v2
         with:
@@ -154,5 +243,16 @@ jobs:
       - name: Publish container image - Admin
         run: docker push ghcr.io/bogdanxu/admin:latest
 
+      - name: Publish container image - Flight-search
+        run: docker push ghcr.io/bogdanxu/flight-search:latest
+
+      - name: Publish container image - Notifications
+        run: docker push ghcr.io/bogdanxu/notification:latest
+
+      - name: Publish container image - Operator
+        run: docker push ghcr.io/bogdanxu/operator:latest
+
+      - name: Publish container image - Payments
+        run: docker push ghcr.io/bogdanxu/payments:latest
 
 
