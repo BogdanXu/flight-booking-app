@@ -213,7 +213,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
-          sarif_file: ${{ steps.scan_notification.outputs.sarif }}
+          sarif_file: ${{ steps.scan_notifications.outputs.sarif }}
           category: "notification-vulnerabilities"
 
       - name: Upload vulnerability report - Operator
