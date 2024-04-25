@@ -13,22 +13,118 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1 class ="text-center mt-5">PayPal Payment Integration</h1>
-        <form method="post" action="/paypal/payment/create" class="mt-5 card p-3">
-            <div class="d-flex justify-content-center">
-                <button
-                    type="submit"
-                    class="btn btn-primary">Pay with PayPal</button>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Make payment for your booking</h2>
+            <form id="paymentForm" th:action="@{/}" method="post">
+            <div>
+                <label for="sum" class="form-label">Amount</label>
+                <input type="number"  class="form-control" id="sum"
+                       th:value="${sum}">
+
             </div>
-        </form>
-        <form method="post" action="/paypal/payment/create" class="mt-5 card p-3">
-<!--            <input type="hidden" name="bookingId" value="6628f1eeef2f732aebe08608">-->
-            <div class="d-flex justify-content-center">
-                <button
-                        type="submit"
-                        class="btn btn-primary">Pay with card</button>
-            </div>
+        <div class="mb-3">
+            <label for="bookingId" class="form-label">Booking Id</label>
+            <input type="text"  class="form-control" id="bookingId"
+                   th:value="${bookingId}">
+        </div>
+        <button type="button" id="paypalButton" class="btn btn-primary">Pay with PayPal</button>
         </form>
     </div>
+</div>
+</div>
+    <script>
+
+        document.getElementById("paypalButton").addEventListener("click", function () {
+    var sum = document.getElementById("sum").value;
+    var bookingId = document.getElementById("bookingId").value;
+
+    if (sum.trim() === "" || parseFloat(sum) <= 0) {
+        alert("A valid total sum is required.");
+        return;
+    }
+    if (bookingId.trim() === "") {
+        alert("Booking ID is required.");
+        return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/paypal/payment/create?sum=" + encodeURIComponent(sum) + "&bookingId=" + encodeURIComponent(bookingId), true);
+
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if(response.redirectUrl) {
+                    window.location.href = response.redirectUrl;
+                } else {
+                    alert("No redirect URL provided.");
+                }
+            } else {
+                console.error("Error: " + xhr.status);
+                alert("An error occurred. Please try again.");
+            }
+        }
+    };
+
+    xhr.send();
+});
+<!--        document.getElementById("paypalButton").addEventListener("click", function () {-->
+<!--            var sum = document.getElementById("sum").value;-->
+<!--            var bookingId = document.getElementById("bookingId").value;-->
+
+
+<!--            // Verificăm dacă totalAmount nu este gol-->
+<!--            if (sum.trim() === "") {-->
+<!--                alert("Total sum is required.");-->
+<!--                return;-->
+<!--            }-->
+
+<!--            var xhr = new XMLHttpRequest();-->
+<!--            xhr.open("POST", "/paypal/payment/create?sum=" + encodeURIComponent(sum) + "&bookingId=" + encodeURIComponent(bookingId), true) ;-->
+
+<!--            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");-->
+<!--            xhr.onreadystatechange = function () {-->
+<!--                if (xhr.readyState === 4) {-->
+<!--                    if (xhr.status === 200) {-->
+<!--                        // Redirect to the provided URL-->
+<!--                        window.location.href = JSON.parse(xhr.responseText).redirectUrl;-->
+<!--                    } else {-->
+<!--                        // Handle error response-->
+<!--                        console.error("Error: " + xhr.status);-->
+<!--                        // Optionally, display an error message to the user-->
+<!--                    }-->
+<!--                }-->
+<!--            };-->
+
+<!--            // Nu este necesar să mai trimitem parametrii în corpul cererii, deoarece sunt trimiși deja în URL-->
+<!--            xhr.send();-->
+<!--        });-->
+
+    </script>
+
+
+<!--    <div class="container">-->
+<!--        <h1 class ="text-center mt-5">PayPal Payment Integration</h1>-->
+
+<!--        <form method="post" action="/paypal/payment/create" class="mt-5 card p-3">-->
+<!--            <input type="text" th:field="*{sum}" th:value="${sum}" required class="form-control" id="sum" name="sum">-->
+
+<!--            <div class="d-flex justify-content-center">-->
+<!--                <button-->
+<!--                    type="submit"-->
+<!--                    class="btn btn-primary">Pay with PayPal</button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--        <form method="post" action="/paypal/payment/create" class="mt-5 card p-3">-->
+<!--            <div class="d-flex justify-content-center">-->
+<!--                <button-->
+<!--                        type="submit"-->
+<!--                        class="btn btn-primary">Pay with card</button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
 </body>

@@ -43,6 +43,8 @@ public class PaymentUpdateListener {
         paymentDetail.setStatus("INITIATED");
         paymentDetailRepository.save(paymentDetail).subscribe();
 
+        String paymentLink = "http://localhost:9999/paypal/payment/create?sum="+ paymentDetailDTO.getSum() + "&bookingId=" + paymentDetailDTO.getBookingId();
+        System.out.println(paymentLink);
         paymentService.verifyPayment(paymentDetail)
                 .doOnSuccess(confirmPayment -> {
                     if (Boolean.TRUE.equals(confirmPayment)) {

@@ -18,7 +18,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.reactive.result.view.RedirectView;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
@@ -67,19 +69,33 @@ public class PaypalController {
 //    }
 
     @GetMapping("/")
-    public String home(){
+    public String home(@RequestParam(value = "sum",  required = false) Integer sum, @RequestParam(value= "bookingId",required = false) String bookingId, Model model){
+
+
+        model.addAttribute("sum", sum);
+        model.addAttribute("bookingId", bookingId);
         return "index";
     }
 
+//    @GetMapping("/")
+//    public String home(@RequestParam(value = "sum", required = false) Integer sum,
+//                       @RequestParam(value= "bookingId", required = false) String bookingId, Model model) {
+//        model.addAttribute("sum", sum != null ? sum : 0);
+//        model.addAttribute("bookingId", bookingId != null ? bookingId : "defaultBookingId");
+//        return "index";
+//    }
+
     @PostMapping(value = "/payment/create")
-    public ResponseEntity<Object> createPayment() {
+    public ResponseEntity<Object> createPayment(@RequestParam(value = "sum") Integer sum, @RequestParam(value= "bookingId") String bookingId) {
         try {
+
+            Double amount = Double.valueOf(sum);
 
             log.info("createPayment-LOG");
             String cancelUrl = "http://localhost:9999/paypal/payment/cancel";
             String successUrl = "http://localhost:9999/paypal/payment/success";
 
-            Payment payment = paypalService.createPayment(11.0, "EUR", "paypal", "sale",
+            Payment payment = paypalService.createPayment(amount, "EUR", "paypal", "sale",
                     "operatorIban", cancelUrl, successUrl);
 
             for (Links links : payment.getLinks()) {
