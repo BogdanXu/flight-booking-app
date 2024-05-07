@@ -11,8 +11,11 @@ import reactor.core.publisher.Flux;
 public class NotificationService {
     private final NotificationRepository notificationRepository;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    private final MailService mailService;
+
+    public NotificationService(NotificationRepository notificationRepository, MailService mailService) {
         this.notificationRepository = notificationRepository;
+        this.mailService = mailService;
     }
 
     public Iterable<Notification> findAll() {
@@ -20,6 +23,7 @@ public class NotificationService {
     }
 
     public Notification saveNotification(Notification notification) {
+        mailService.sendEmail("vladgrigorita2001@gmail.com","Notification Email", notification.getMessage());
         return notificationRepository.save(notification);
     }
 }
