@@ -23,7 +23,7 @@ public class NotificationService {
     }
 
     public Notification saveNotification(Notification notification) {
-        mailService.sendEmail("vladgrigorita2001@gmail.com","Notification Email", notification.getMessage());
+        mailService.sendEmail(notification.getReceiverEmail(), "Notification Email", notification.getMessage());
         return notificationRepository.save(notification);
     }
 }

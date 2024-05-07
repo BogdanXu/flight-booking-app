@@ -16,6 +16,7 @@ public class NotificationMapper {
         entity.setId(dto.getId());
         entity.setBookingId(dto.getBookingId());
         entity.setMessage(dto.getMessage());
+        entity.setReceiverEmail(dto.getReceiverEmail());
         if (dto.getCreatedAt() != null) {
             entity.setCreatedAt(dto.getCreatedAt());
         }
@@ -31,6 +32,7 @@ public class NotificationMapper {
         dto.setId(entity.getId());
         dto.setBookingId(entity.getBookingId());
         dto.setMessage(entity.getMessage());
+        dto.setReceiverEmail(entity.getReceiverEmail());
         if (entity.getCreatedAt() != null) {
             dto.setCreatedAt(entity.getCreatedAt());
         }

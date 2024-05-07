@@ -10,6 +10,8 @@ public class NotificationDTO {
 
     private Date createdAt;
 
+    private String receiverEmail;
+
     public NotificationDTO() {
     }
 
@@ -17,6 +19,22 @@ public class NotificationDTO {
         this.id = id;
         this.bookingId = bookingId;
         this.message = message;
+    }
+
+    public NotificationDTO(String id, String bookingId, String message, Date createdAt, String receiverEmail) {
+        this.id = id;
+        this.bookingId = bookingId;
+        this.message = message;
+        this.createdAt = createdAt;
+        this.receiverEmail = receiverEmail;
+    }
+
+    public String getReceiverEmail() {
+        return receiverEmail;
+    }
+
+    public void setReceiverEmail(String receiverEmail) {
+        this.receiverEmail = receiverEmail;
     }
 
     public String getId() {
