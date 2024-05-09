@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight-search-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flight-search-be
+  template:
+    metadata:
+      labels:
+        app: flight-search-be
+    spec:
+      containers:
+      - name: flight-search-be
+        image: ghcr.io/bogdanxu/flight-search:latest
+        ports:
+        - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flight-search-be-service
+spec:
+  selector:
+    app: flight-search-be
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082

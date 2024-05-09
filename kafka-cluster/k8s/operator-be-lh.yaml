@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operator-be-lufthansa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: operator-be-lufthansa
+  template:
+    metadata:
+      labels:
+        app: operator-be-lufthansa
+    spec:
+      containers:
+      - name: operator-be-lufthansa
+        image: ghcr.io/bogdanxu/operator:latest
+        ports:
+        - containerPort: 8282
+        env:
+        - name: SPRING_DATA_MONGODB_URI
+          value: "mongodb://root:123456@operator-mongo-db-service:27017/operator_db?authSource=admin"
+        - name: airline.iata.code
+          value: "LH" 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: operator-be-lufthansa-service
+spec:
+  selector:
+    app: operator-be-lufthansa
+  ports:
+    - protocol: TCP
+      port: 8282
+      targetPort: 8282

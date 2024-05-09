@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications-be
+  template:
+    metadata:
+      labels:
+        app: notifications-be
+    spec:
+      containers:
+      - name: notifications-be
+        image: ghcr.io/bogdanxu/notification:latest
+        ports:
+        - containerPort: 8084
+        env:
+        - name: SPRING_ELASTICSEARCH_URIS
+          value: "http://es01-service:9200"
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka-broker-service:9092"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-be-service
+spec:
+  selector:
+    app: notifications-be
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084

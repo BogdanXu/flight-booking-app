@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments-be
+  template:
+    metadata:
+      labels:
+        app: payments-be
+    spec:
+      containers:
+      - name: payments-be
+        image: ghcr.io/bogdanxu/payments:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATA_MONGODB_URI
+          value: "mongodb://root:123456@mongo-db-service:27017/booking_db?authSource=admin"
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka-broker-service:9092"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-be-service
+spec:
+  selector:
+    app: payments-be
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

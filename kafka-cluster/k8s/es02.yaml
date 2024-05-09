@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es02
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es02
+  template:
+    metadata:
+      labels:
+        app: es02
+    spec:
+      containers:
+      - name: es02
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.20
+        env:
+        - name: node.name
+          value: es02
+        - name: cluster.name
+          value: es-docker-cluster
+        - name: discovery.seed_hosts
+          value: "es01,es03"
+        - name: cluster.initial_master_nodes
+          value: "es01,es02,es03"
+        - name: bootstrap.memory_lock
+          value: "false"
+        - name: ES_JAVA_OPTS
+          value: "-Xms512m -Xmx512m"
+        - name: xpack.security.enabled
+          value: "false"
+        ports:
+        - containerPort: 9200
+        volumeMounts:
+        - name: data02
+          mountPath: /usr/share/elasticsearch/data
+      volumes:
+      - name: data02
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es02-service
+spec:
+  selector:
+    app: es02
+  ports:
+    - protocol: TCP
+      port: 9200
+      targetPort: 9200

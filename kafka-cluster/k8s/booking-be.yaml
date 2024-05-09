@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-be
+  template:
+    metadata:
+      labels:
+        app: booking-be
+    spec:
+      containers:
+      - name: booking-be
+        image: ghcr.io/bogdanxu/booking:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_APPLICATION_JSON
+          value: |
+            {
+              "spring.data.mongodb.uri": "mongodb://root:123456@mongo-db-service:27017/booking_db?authSource=admin",
+              "spring.kafka.bootstrap-servers": "kafka-broker-service:9092",
+              "keycloak.auth-server-url": "http://keycloak:8080",
+              "spring.security.oauth2.resourceserver.jwt.issuer-uri": "http://keycloak:8080/realms/auth_service",
+              "app.jwks.uri": "http://keycloak:8080/realms/auth_service/protocol/openid-connect/certs"
+            }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-be-service
+spec:
+  selector:
+    app: booking-be
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

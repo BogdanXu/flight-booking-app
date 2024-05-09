@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-postgres
+  template:
+    metadata:
+      labels:
+        app: admin-postgres
+    spec:
+      containers:
+      - name: admin-postgres
+        image: postgres
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: secret
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-postgres-service
+spec:
+  selector:
+    app: admin-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
