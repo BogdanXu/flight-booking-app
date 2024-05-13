@@ -3,6 +3,7 @@ package com.example.booking.controller;
 import com.example.booking.dto.BookingDTO;
 import com.example.booking.dto.ExtendedBookingDTO;
 import com.example.booking.service.BookingService;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,7 @@ public class BookingController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_user')")
-    public Mono<BookingDTO> createBooking(@RequestBody @Valid ExtendedBookingDTO bookingDTO) {
+    public Mono<BookingDTO> createBooking(@RequestBody @Valid ExtendedBookingDTO bookingDTO, ServerHttpRequest request) {
         return bookingService.saveBooking(bookingDTO);
     }
 
