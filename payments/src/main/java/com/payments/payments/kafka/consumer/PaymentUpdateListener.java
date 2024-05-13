@@ -13,6 +13,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
+import java.net.URI;
+
 import static com.payments.payments.constants.Constants.ACCEPTED;
 import static com.payments.payments.constants.Constants.REJECTED;
 
@@ -27,14 +30,13 @@ public class PaymentUpdateListener {
 
     private final PaymentService paymentService;
 
-
-
     public PaymentUpdateListener(PaymentDetailRepository paymentDetailRepository, KafkaTemplate<String,
             PaymentDetailConfirmationDTO> kafkaTemplate, PaymentService paymentService) {
         this.paymentDetailRepository = paymentDetailRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.paymentService = paymentService;
     }
+
 
     @KafkaListener(topics = "payment-request")
     public void listen(PaymentDetailDTO paymentDetailDTO) {
@@ -43,25 +45,27 @@ public class PaymentUpdateListener {
         paymentDetail.setStatus("INITIATED");
         paymentDetailRepository.save(paymentDetail).subscribe();
 
-        String paymentLink = "http://localhost:9999/paypal/payment/create?sum="+ paymentDetailDTO.getSum() + "&bookingId=" + paymentDetailDTO.getBookingId();
-        System.out.println(paymentLink);
-        paymentService.verifyPayment(paymentDetail)
-                .doOnSuccess(confirmPayment -> {
-                    if (Boolean.TRUE.equals(confirmPayment)) {
-                        paymentDetail.setStatus(ACCEPTED);
-                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
-                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
-                        paymentDetailRepository.save(paymentDetail).subscribe();
-                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-                    } else {
-                        paymentDetail.setStatus(REJECTED);
-                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
-                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
-                        paymentDetailRepository.save(paymentDetail).subscribe();
-                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
-                    }
-                })
-                .subscribe();
+        String paymentLink = "http://localhost:9999/?sum="+ paymentDetailDTO.getSum() + "&bookingId=" + paymentDetailDTO.getBookingId();
+        System.out.println("paymentLink: " + paymentLink);
+
+
+//        paymentService.verifyPayment(paymentDetail)
+//                .doOnSuccess(confirmPayment -> {
+//                    if (Boolean.TRUE.equals(confirmPayment)) {
+//                        paymentDetail.setStatus(ACCEPTED);
+//                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+//                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), true);
+//                        paymentDetailRepository.save(paymentDetail).subscribe();
+//                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+//                    } else {
+//                        paymentDetail.setStatus(REJECTED);
+//                        PaymentDetailConfirmationDTO paymentDetailConfirmationDTO =
+//                                new PaymentDetailConfirmationDTO(paymentDetail.getBookingId(), false);
+//                        paymentDetailRepository.save(paymentDetail).subscribe();
+//                        kafkaTemplate.send("payment-request-confirmation", paymentDetailConfirmationDTO);
+//                    }
+//                })
+//                .subscribe();
 
     }
 

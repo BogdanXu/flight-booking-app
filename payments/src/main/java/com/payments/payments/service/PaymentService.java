@@ -35,6 +35,20 @@ public class PaymentService {
         return verifyPaymentWithIban(paymentDetail);
     }
 
+    public Mono<Boolean> createObjPaymentDetail(Integer sum, String bookingId) {
+        log.info("Starting payment verification for bookingId: {}", bookingId);
+
+        // Create the PaymentDetail object
+        PaymentDetail paymentDetail = new PaymentDetail();
+        paymentDetail.setAmount(sum);
+        paymentDetail.setBookingId(bookingId);
+        paymentDetail.setClientIban("clientIban");
+        paymentDetail.setOperatorIban("operatorIban");
+
+        return verifyPayment(paymentDetail);
+    }
+
+
     private Mono<Boolean> verifyPaymentWithIban(PaymentDetail paymentDetail) {
         log.info("Verifying payment with IBANs for bookingId: {}", paymentDetail.getBookingId());
 
