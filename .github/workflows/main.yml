@@ -53,7 +53,7 @@ jobs:
       working-directory: ./booking
       run: |
         chmod +x mvnw                                 
-        ./mvnw clean install -DskipTests
+        ./mvnw clean install -DskipTests -DskipITs
 
     - name: Build, unit tests and integration tests - Flight-search
       working-directory: ./flight-search
