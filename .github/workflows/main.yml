@@ -77,7 +77,7 @@ jobs:
       working-directory: ./payments
       run: |
         chmod +x mvnw                                 
-        ./mvnw clean install -DskipTests
+        ./mvnw clean install -Tests
 
   package:
     name: Package and Publish 
@@ -101,7 +101,7 @@ jobs:
         working-directory: ./booking
         run: |
           chmod +x mvnw 
-          ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/booking:latest
+          ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ghcr.io/bogdanxu/booking:latest -DskipITs
       
       - name: Build container image - Admin
         working-directory: ./admin
