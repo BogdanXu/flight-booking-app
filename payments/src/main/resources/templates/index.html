@@ -27,6 +27,7 @@
                 </div>
                 <button type="button" id="paypalButton" class="btn btn-primary">Pay with PayPal</button>
                 <button type="button" id="cardButton" class="btn btn-primary">Pay with Card</button>
+                <button type="button" id="stripeButton" class="btn btn-primary">Pay with Stripe</button>
             </form>
         </div>
     </div>
@@ -124,6 +125,81 @@ fetch('/card/payment/create', {
     alert("Failed to process payment: " + error.message);
 });
 });
+
+
+
+    // Stripe Payment Button
+
+<!--    document.getElementById("stripeButton").addEventListener("click", function () {-->
+<!--        var sum = document.getElementById("sum").value;-->
+<!--        var bookingId = document.getElementById("bookingId").value;-->
+
+<!--        if (!sum || !bookingId) {-->
+<!--            alert("Both Sum and Booking ID are required.");-->
+<!--            return;-->
+<!--        }-->
+
+<!--        fetch('/public/v2/stripe/session/payment', {-->
+<!--            method: 'POST',-->
+<!--            headers: {-->
+<!--                'Content-Type': 'application/json',-->
+<!--            },-->
+<!--            body: JSON.stringify({ sum: sum, bookingId: bookingId })-->
+<!--        })-->
+<!--        .then(response => response.json())-->
+<!--        .then(data => {-->
+<!--            if (data && data.url) {-->
+<!--                window.location.href = data.url;-->
+<!--            } else {-->
+<!--                alert("Failed to create payment session.");-->
+<!--            }-->
+<!--        })-->
+<!--        .catch((error) => {-->
+<!--            console.error('Error:', error);-->
+<!--            alert("Failed to create payment session: " + error.message);-->
+<!--        });-->
+<!--    });-->
+
+
+// Stripe Payment Button
+
+   document.getElementById("stripeButton").addEventListener("click", function () {
+    var sum = document.getElementById("sum").value;
+    var bookingId = document.getElementById("bookingId").value;
+
+    if (!sum || !bookingId) {
+        alert("Both Sum and Booking ID are required.");
+        return;
+    }
+
+    fetch('/public/v2/stripe/session/payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sum: sum, bookingId: bookingId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+.then(data => {
+    if (data && data.sessionUrl) {
+        window.location.href = data.sessionUrl;
+    } else {
+        alert("Failed to create payment session: Invalid response");
+    }
+})
+    .catch((error) => {
+        console.error('Error:', error);
+        alert("Failed to create payment session: " + error.message);
+    });
+});
+
+
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"

@@ -1,6 +1,9 @@
 package com.payments.payments.controller;
 
+import com.payments.payments.dto.PaymentDetailDTO;
+import com.payments.payments.model.PaymentDetail;
 import com.payments.payments.repository.PaymentDetailRepository;
+
 import com.payments.payments.service.AccountService;
 import com.payments.payments.service.PaymentDetailService;
 import com.payments.payments.service.PaymentService;
@@ -26,18 +29,30 @@ import java.util.Map;
 @RequestMapping(value = "/paypal")
 public class PaypalController {
     private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
+
+//    PaymentDetail paymentDetail ;
+
     private final PaypalService paypalService;
     private final AccountService  accountService;
     private final PaymentDetailService paymentDetailService;
     private final PaymentDetailRepository paymentDetailRepository;
 
-    public PaypalController(PaypalService paypalService, AccountService accountService, PaymentDetailService paymentDetailService, PaymentDetailRepository paymentDetailRepository) {
+//    public PaypalController(PaymentDetail paymentDetail, PaypalService paypalService, AccountService accountService,
+//                            PaymentDetailService paymentDetailService, PaymentDetailRepository paymentDetailRepository) {
+//        this.paymentDetail = paymentDetail;
+//        this.paypalService = paypalService;
+//        this.accountService = accountService;
+//        this.paymentDetailService = paymentDetailService;
+//        this.paymentDetailRepository = paymentDetailRepository;
+//    }
+
+
+        public PaypalController(PaypalService paypalService, AccountService accountService, PaymentDetailService paymentDetailService, PaymentDetailRepository paymentDetailRepository) {
         this.paypalService = paypalService;
         this.accountService = accountService;
         this.paymentDetailService = paymentDetailService;
         this.paymentDetailRepository = paymentDetailRepository;
     }
-
 
     @GetMapping("/")
     public String home(
@@ -99,11 +114,20 @@ public class PaypalController {
         return Mono.fromCallable(() -> paypalService.executePayment(paymentId, payerId))
                 .flatMap(payment -> {
                     if ("approved".equalsIgnoreCase(payment.getState())) {
+//                        String bookingId = paymentRepository.findBookingIdById(paymentId);
+//                        paypalService.updatePaymentStatus2(bookingId);
+
+
+
                         // Retrieve and update the operator's account balance
+
+
                         return accountService.getAccount(payment.getTransactions().get(0).getDescription())
                                 .flatMap(operatorAccount -> {
                                     double amount = Double.parseDouble(payment.getTransactions().get(0).getAmount().getTotal());
                                     operatorAccount.setBalance((operatorAccount.getBalance() + amount));
+//                                    paymentDetail.setStatus("ACCEPTED");
+//                                    paymentDetailRepository.save(paymentDetail).subscribe();
                                     return accountService.updateAccount(operatorAccount);
                                 })
                                 .thenReturn("paymentSuccess"); // Return success response

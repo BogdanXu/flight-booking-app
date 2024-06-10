@@ -2,9 +2,11 @@ package com.payments.payments.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 @Document(collection = "payments")
+@Component
 public class PaymentDetail {
     @Id
     private String id;

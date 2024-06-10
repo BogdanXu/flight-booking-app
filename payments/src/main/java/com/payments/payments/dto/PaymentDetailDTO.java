@@ -1,5 +1,8 @@
 package com.payments.payments.dto;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PaymentDetailDTO {
 
     private String bookingId;

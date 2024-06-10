@@ -6,9 +6,13 @@ import com.payments.payments.mapper.PaymentDetailMapper;
 import com.payments.payments.model.PaymentDetail;
 import com.payments.payments.repository.PaymentDetailRepository;
 import com.payments.payments.service.PaymentService;
+import com.payments.payments.service.PaypalService;
+import com.payments.payments.service.StripeService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -23,6 +27,15 @@ import static com.payments.payments.constants.Constants.REJECTED;
 @Component
 public class PaymentUpdateListener {
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+
+
+    @Autowired
+    PaypalService paypalService;
+    @Autowired
+    StripeService stripeService;
     private static final Logger log = LoggerFactory.getLogger(PaymentUpdateListener.class);
     private final PaymentDetailRepository paymentDetailRepository;
 
@@ -48,6 +61,13 @@ public class PaymentUpdateListener {
         String paymentLink = "http://localhost:9999/?sum="+ paymentDetailDTO.getSum() + "&bookingId=" + paymentDetailDTO.getBookingId();
         System.out.println("paymentLink: " + paymentLink);
 
+        paypalService.setPaymentDetail(paymentDetail);
+        stripeService.setPaymentDetail(paymentDetail);
+
+
+//        // Publish the event
+//        eventPublisher.publishEvent(new PaymentUpdateEvent(this, paymentDetail));
+
 
 //        paymentService.verifyPayment(paymentDetail)
 //                .doOnSuccess(confirmPayment -> {
@@ -66,6 +86,8 @@ public class PaymentUpdateListener {
 //                    }
 //                })
 //                .subscribe();
+
+
 
     }
 
